@@ -1,0 +1,11 @@
+# Ignore all markdown files
+*.md
+
+# Ignore the build directory
+/dist
+
+# Ignore node modules, they will be recreated in the build process
+#node_modules/
+
+# Ignore all .git directories
+.git/
