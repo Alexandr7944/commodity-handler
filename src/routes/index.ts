@@ -14,7 +14,7 @@ class Routes {
         app.use("/supplier", supplierRoutes);
         app.use("/product", productRoutes);
         app.use("/bitrix", bitrixRoutes);
-        app.use("/", (req: Request, res: Response) => res.send('Server work'));
+        app.use("/", (req: Request, res: Response) => res.json({message: 'Server work'}));
     }
 }
 

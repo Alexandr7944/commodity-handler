@@ -45,12 +45,6 @@ class Product extends Model {
     })
     size?: string;
 
-    get fullName(): NonAttribute<string> {
-        return this.size
-            ? `${this.article}/${this.color}/${this.size} - ${this.name}`
-            : `${this.article}/${this.color} - ${this.name}`;
-    }
-
     @HasMany(() => Catalog, 'productId')
     declare catalogs?: NonAttribute<Catalog[]>;
 

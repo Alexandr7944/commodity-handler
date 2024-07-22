@@ -2,7 +2,7 @@ import express from 'express';
 import Server from './Server';
 import 'dotenv/config';
 
-const app = express();
+export const app = express();
 new Server(app);
 
 const PORT = process.env.PORT || 3105;
