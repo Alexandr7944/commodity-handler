@@ -15,7 +15,6 @@ class CharacteristicController {
             assert.ok(newCharacteristic.id, 'Characteristic was not created!');
             res.status(201).send(newCharacteristic);
         } catch (error: Error | any) {
-            await characteristicService.destroy(characteristic.id);
             res.status(500).send({
                 message: `Some error occurred while creating the Characteristic. Error: ${error?.message}`
             });

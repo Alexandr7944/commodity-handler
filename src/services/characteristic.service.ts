@@ -36,13 +36,13 @@ class CharacteristicService extends BitrixCRUD {
             PROPERTY_615: characteristic.ozSku || '',
         };
 
-        console.log(this.saveElement);
         const url = this.urlConverter('lists.element.add.json', {
             ...this.block,
             ELEMENT_CODE: `element_${product.id}_${characteristic.supplierId}`,
             fields: this.saveElement
         });
         const {result} = await this.fetchRequest(url);
+        console.log({method: 'CharacteristicService.create', characteristic, result});
         return result;
     }
 
@@ -106,7 +106,8 @@ class CharacteristicService extends BitrixCRUD {
             ...this.block,
             ELEMENT_ID: id
         });
-        await this.fetchRequest(url);
+        const {result} = await this.fetchRequest(url);
+        console.log({method: 'CharacteristicService.destroy', id, result});
     }
 
     get fields() {
@@ -129,7 +130,8 @@ class CharacteristicService extends BitrixCRUD {
             ELEMENT_ID: id,
             fields: this.saveElement
         });
-        await this.fetchRequest(url);
+        const {result} = await this.fetchRequest(url);
+        console.log({method: 'CharacteristicService.update', element: this.saveElement, result});
     }
 }
 

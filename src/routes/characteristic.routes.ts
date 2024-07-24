@@ -17,7 +17,7 @@ class CharacteristicRoutes {
         this.router.post('/', this.controller.create);
         this.router.get('/', this.controller.findAll);
         this.router.get('/:id', this.controller.findOne);
-        this.router.put('/:id', Auth.checkAuth, this.controller.update);
+        this.router.put('/:id', this.controller.update);
         this.router.delete('/:id', Auth.checkAuth, this.controller.destroy);
     }
 

@@ -83,7 +83,6 @@ class BitrixCRUD {
         if (!searchValue) return '';
 
         const fields = await this.getField(blockId, field);
-        console.log(fields);
         const value = Number.isNaN(+searchValue)
             ? Object.entries(fields || {}).find(([_key, value]) => value === searchValue)?.[0]
             : fields[searchValue as keyof typeof fields];

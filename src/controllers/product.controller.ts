@@ -21,13 +21,11 @@ class ProductController {
 
         try {
             await Database.sequelize?.transaction(async (trx) => {
-                let oldProduct;
-                product.id
-                    ? oldProduct = await productRepositories.findOne(product.id)
-                    : [oldProduct] = await productRepositories.findAll(product);
+                const {id: productId, ...productData} = product;
+                let [oldProduct] = await productRepositories.findAll(productId ? product : productData);
 
-                if (!product.id) {
-                    if (oldProduct?.id) {
+                if (!productId) {
+                    if (oldProduct) {
                         product.id = oldProduct?.id;
                     } else {
                         const newProduct = await productRepositories.create(product, trx);
@@ -39,12 +37,11 @@ class ProductController {
                     if (oldProduct?.catalogs?.[0]?.id) {
                         catalog.id = oldProduct?.catalogs?.[0]?.id;
                     } else {
-                        const catalogId = await new CatalogService().create(product);
+                        catalog.id = await new CatalogService().create(product);
                         await catalogRepositories.create({
-                            id: catalogId,
-                            productId: product.id || 0,
+                            id: catalog.id,
+                            productId: product.id,
                         }, trx);
-                        catalog.id = catalogId;
                     }
                 }
 
@@ -81,18 +78,6 @@ class ProductController {
         }
     }
 
-    async createMultiple(req: Request, res: Response) {
-        const products = req.body;
-        try {
-            const newProducts = await productRepositories.createMultiple(products);
-            res.status(201).send(newProducts);
-        } catch (error: Error | any) {
-            res.status(500).send({
-                message: `Some error occurred while creating Products. Error: ${error?.message}`
-            });
-        }
-    }
-
     async findAll(req: Request, res: Response) {
         try {
             const {...params} = req.query;
@@ -107,7 +92,6 @@ class ProductController {
 
     async findOne(req: Request, res: Response) {
         const id = parseInt(req.params.id);
-
         try {
             const product = await productRepositories.findOne(id);
 
@@ -124,17 +108,7 @@ class ProductController {
 
     async update(req: Request, res: Response) {
         const product = req.body;
-        product.id = parseInt(req.params.id);
-
         try {
-            const {name, article, color, size} = product;
-            let [oldProduct]: Product[] = await productRepositories.findAll({
-                name, color,
-                article: String(article),
-                size: size ? String(size) : null
-            });
-            assert.ok(!oldProduct?.id, `Product with article=${article}, name=${name}, color=${color}${size ? ', size=' + size : ''} already exists.`);
-
             await Database.sequelize?.transaction(async (trx) => {
                 const [num] = await productRepositories.update(product, trx);
                 const data = await productRepositories.findOne(product.id) || {} as Product;

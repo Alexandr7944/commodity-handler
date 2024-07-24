@@ -21,13 +21,13 @@ class RangeService extends BitrixCRUD {
         this.saveElement['PROPERTY_459'] = await this.numberField(product.color, 'PROPERTY_459', this.block.IBLOCK_ID);          //color
         this.writeProductValue(product);
 
-        console.log(this.saveElement);
         const url = this.urlConverter('lists.element.add.json', {
             ...this.block,
             ELEMENT_CODE: `element_${product.id}`,
             fields: this.saveElement,
         });
         const {result} = await this.fetchRequest(url);
+        console.log({method: 'RangeService.create', type, product, result});
         return result;
     }
 
@@ -51,17 +51,16 @@ class RangeService extends BitrixCRUD {
             }
 
             if (type)
-                this.saveElement['PROPERTY_771'] =  await this.numberField(type, 'PROPERTY_771', this.block.IBLOCK_ID);
+                this.saveElement['PROPERTY_771'] = await this.numberField(type, 'PROPERTY_771', this.block.IBLOCK_ID);
 
             product && this.writeProductValue(product);
-
-            console.log(this.saveElement);
             const url = this.urlConverter('lists.element.update.json', {
                 ...this.block,
                 ELEMENT_ID: id,
                 fields: this.saveElement
             });
-            await this.fetchRequest(url);
+            const result = await this.fetchRequest(url);
+            console.log({method: 'RangeService.update', ranges, product, result});
         }
     }
 
@@ -70,7 +69,8 @@ class RangeService extends BitrixCRUD {
             ...this.block,
             ELEMENT_ID: id
         });
-        await this.fetchRequest(url);
+        const result = await this.fetchRequest(url);
+        console.log({method: 'RangeService.destroy', id, result});
     }
 
 

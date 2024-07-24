@@ -11,10 +11,6 @@ class RangeRepositories {
         });
     }
 
-    async createMultiple(body: RangeType[]) {
-        return await Range.bulkCreate(body);
-    }
-
     async findAll() {
         return await Range.findAll({
             order: [['id', 'ASC']],

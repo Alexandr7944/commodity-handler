@@ -16,6 +16,7 @@ class CatalogService extends BitrixCRUD {
             },
         });
         const {result} = await this.fetchRequest(url);
+        console.log({method: 'CatalogService.create', product, result});
         return result;
     }
 
@@ -25,13 +26,15 @@ class CatalogService extends BitrixCRUD {
                 ID: id,
                 fields: {NAME: this.getProductName(product)},
             });
-            await this.fetchRequest(url);
+            const result = await this.fetchRequest(url);
+            console.log({method: 'CatalogService.update', product, result});
         }
     }
 
     async destroy(id: number) {
         const url = this.urlConverter('crm.product.delete.json', {id});
-        await this.fetchRequest(url);
+        const result = await this.fetchRequest(url);
+        console.log({method: 'CatalogService.destroy', id, result});
     }
 }
 

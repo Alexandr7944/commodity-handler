@@ -15,15 +15,9 @@ class ProductRoutes {
 
     intializeRoutes() {
         this.router.post('/', this.controller.create);
-
-        this.router.post('/multiple', this.controller.createMultiple);
-
         this.router.get('/', this.controller.findAll);
-
         this.router.get('/:id', this.controller.findOne);
-
         this.router.put('/:id', Auth.checkAuth, this.controller.update);
-
         this.router.delete('/:id', Auth.checkAuth, this.controller.destroy);
     }
 
