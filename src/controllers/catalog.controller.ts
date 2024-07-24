@@ -60,7 +60,7 @@ class CatalogController {
         catalog.id = parseInt(req.params.id);
 
         try {
-            const num = await catalogRepositories.update(catalog);
+            const [num] = await catalogRepositories.update(catalog);
 
             num
                 ? res.status(200).send({message: "Catalog was updated successfully."})

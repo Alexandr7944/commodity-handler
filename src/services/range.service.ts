@@ -65,6 +65,14 @@ class RangeService extends BitrixCRUD {
         }
     }
 
+    async destroy(id: number) {
+        const url = this.urlConverter('lists.element.delete.json', {
+            ...this.block,
+            ELEMENT_ID: id
+        });
+        await this.fetchRequest(url);
+    }
+
 
     writeProductValue(product: ProductType) {
         this.saveElement['NAME'] = this.getProductName(product);

@@ -36,9 +36,10 @@ class ProductRepositories {
         });
     }
 
-    async destroy(id: number) {
+    async destroy(id: number, transaction?: Transaction) {
         return Product.destroy({
-            where: {id}
+            where: {id},
+            ...(transaction ? {transaction} : {}),
         });
     }
 }

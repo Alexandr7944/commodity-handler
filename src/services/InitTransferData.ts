@@ -1,7 +1,6 @@
 import {Request, Response} from 'express';
 import BitrixCRUD from "./BitrixCRUD";
 import {CharacteristicType, ProductType} from "../interfaces";
-import Supplier from "../models/supplier.model";
 import {
     CatalogRepositories,
     CharacteristicRepositories,
@@ -13,6 +12,12 @@ import CatalogService from "./catalog.service";
 import RangeService from "./range.service";
 import SupplierService from "./supplier.service";
 import CharacteristicService from "./characteristic.service";
+import CatalogModel from "../models/catalog.model";
+import RangeModel from "../models/range.model";
+import CharacteristicModel from "../models/characteristic.model";
+import Supplier from "../models/supplier.model";
+import SupplierModel from "../models/supplier.model";
+import assert from "node:assert";
 
 type Range = {
     ID: string,
@@ -51,16 +56,26 @@ class InitTransferData {
 
     async transfer(req: Request, res: Response) {
         try {
+            await this.resetTables();
             await this.initCache();
             await this.transferCatalog();
             await this.transferRanges();
             await this.transferSuppliers();
             await this.transferCharacteristics();
-            res.send(201);
+            res.status(200).send({message: 'success'});
         } catch (e: Error | any) {
             console.log(e)
             res.status(500).send({message: e?.message});
         }
+    }
+
+    async resetTables() {
+        await Promise.all([
+            RangeModel.truncate({cascade: true}),
+            CharacteristicModel.truncate({cascade: true}),
+            SupplierModel.truncate({cascade: true}),
+            CatalogModel.truncate({cascade: true}),
+        ])
     }
 
     async transferCatalog() {
@@ -84,8 +99,7 @@ class InitTransferData {
     async transferRanges() {
         const ranges: Range[] = await new RangeService().getRanges();
         const types = await this.bitrix.getField('37', 'PROPERTY_771');
-        if (!ranges || !types)
-            throw new Error('ranges or types is empty');
+        assert.ok(ranges && types, 'Ranges or types is empty');
 
         for await (const range of ranges) {
             const id = Number(range.ID);
@@ -169,11 +183,9 @@ class InitTransferData {
             return productId;
 
         const saveProduct = await ProductRepositories.create(product);
-        if (saveProduct?.id) {
-            this.cache.set(key, saveProduct.id);
-            return saveProduct.id;
-        }
-        throw new Error('product not found');
+        assert.ok(saveProduct?.id, 'Product not found');
+        this.cache.set(key, saveProduct.id);
+        return saveProduct.id;
     }
 
     getField(fieldsObj: Record<string, string>, fieldList: Record<string, string>) {

@@ -1,5 +1,6 @@
 import productRepositories from "../repositories/product.repositories";
 import {Request, Response} from 'express';
+import assert from "node:assert";
 import Database from "../db/Database";
 import RangeService from "../services/range.service";
 import CharacteristicService from "../services/characteristic.service";
@@ -20,57 +21,57 @@ class ProductController {
 
         try {
             await Database.sequelize?.transaction(async (trx) => {
-            let oldProduct;
-            product.id
-                ? oldProduct = await productRepositories.findOne(product.id)
-                : [oldProduct] = await productRepositories.findAll(product);
+                let oldProduct;
+                product.id
+                    ? oldProduct = await productRepositories.findOne(product.id)
+                    : [oldProduct] = await productRepositories.findAll(product);
 
-            if (!product.id) {
-                if (oldProduct?.id) {
-                    product.id = oldProduct?.id;
-                } else {
-                    const newProduct = await productRepositories.create(product, trx);
-                    product.id = newProduct.id;
+                if (!product.id) {
+                    if (oldProduct?.id) {
+                        product.id = oldProduct?.id;
+                    } else {
+                        const newProduct = await productRepositories.create(product, trx);
+                        product.id = newProduct.id;
+                    }
                 }
-            }
 
-            if (!catalog.id) {
-                if (oldProduct?.catalogs?.[0]?.id) {
-                    catalog.id = oldProduct?.catalogs?.[0]?.id;
-                } else {
-                    const catalogId = await new CatalogService().create(product);
-                    await catalogRepositories.create({
-                        id: catalogId,
-                        productId: product.id || 0,
-                    }, trx);
-                    catalog.id = catalogId;
+                if (!catalog.id) {
+                    if (oldProduct?.catalogs?.[0]?.id) {
+                        catalog.id = oldProduct?.catalogs?.[0]?.id;
+                    } else {
+                        const catalogId = await new CatalogService().create(product);
+                        await catalogRepositories.create({
+                            id: catalogId,
+                            productId: product.id || 0,
+                        }, trx);
+                        catalog.id = catalogId;
+                    }
                 }
-            }
 
-            if (!range.id) {
-                if (oldProduct?.ranges?.[0]?.id) {
-                    range.id = oldProduct?.ranges?.[0]?.id;
-                } else {
-                    range.id = await new RangeService().create({type: range.type, product});
-                    range.productId = product.id;
-                    await rangeRepositories.create(range, trx);
+                if (!range.id) {
+                    if (oldProduct?.ranges?.[0]?.id) {
+                        range.id = oldProduct?.ranges?.[0]?.id;
+                    } else if (range.type) {
+                        range.id = await new RangeService().create({type: range.type, product});
+                        range.productId = product.id;
+                        await rangeRepositories.create(range, trx);
+                    }
                 }
-            }
 
-            if (!characteristic.id) {
-                const searchCharacteristic = oldProduct?.characteristics?.find(item =>
-                    item.supplierId === characteristic.supplierId);
-                if (searchCharacteristic) {
-                    characteristic.id = searchCharacteristic.id;
-                } else {
-                    characteristic.rangeId = range.id;
-                    characteristic.productId = product.id;
-                    characteristic.id = await new CharacteristicService().create({characteristic, product});
-                    await characteristicRepositories.create(characteristic, trx);
+                if (!characteristic.id) {
+                    const searchCharacteristic = oldProduct?.characteristics?.find(item =>
+                        item.supplierId === characteristic.supplierId);
+                    if (searchCharacteristic) {
+                        characteristic.id = searchCharacteristic.id;
+                    } else if (range.id && characteristic.supplierId) {
+                        characteristic.rangeId = range.id;
+                        characteristic.productId = product.id;
+                        characteristic.id = await new CharacteristicService().create({characteristic, product});
+                        await characteristicRepositories.create(characteristic, trx);
+                    }
                 }
-            }
 
-            res.status(201).send({product, catalog, range, characteristic});
+                res.status(201).send({product, catalog, range, characteristic});
             });
         } catch (error: Error | any) {
             console.error(error);
@@ -132,14 +133,12 @@ class ProductController {
                 article: String(article),
                 size: size ? String(size) : null
             });
-            if (oldProduct)
-                throw new Error(`Product with article=${article}, name=${name}, color=${color}${size ? ', size=' + size : ''} already exists.`);
+            assert.ok(!oldProduct?.id, `Product with article=${article}, name=${name}, color=${color}${size ? ', size=' + size : ''} already exists.`);
 
             await Database.sequelize?.transaction(async (trx) => {
                 const [num] = await productRepositories.update(product, trx);
                 const data = await productRepositories.findOne(product.id) || {} as Product;
-                if (!num || !data?.id)
-                    throw new Error(`Cannot update Product with id=${product.id}.`);
+                assert.ok(num && data?.id, 'Product was not updated!');
 
                 await new RangeService().update({ranges: this.getIds(data.ranges), product});
                 await new CharacteristicService().updateValueProduct({ids: this.getIds(data.characteristics), product});
@@ -158,13 +157,33 @@ class ProductController {
         const id = parseInt(req.params.id);
 
         try {
-            const num = await productRepositories.destroy(id);
+            const oldProduct = await productRepositories.findOne(id);
+            assert.ok(oldProduct, `Cannot find Product with id=${id}.`);
+            assert.ok(!oldProduct?.characteristics?.length, `Cannot delete Product with id=${id}. Product has characteristics.`);
 
-            num
-                ? res.status(200).send({message: "Product was deleted successfully."})
-                : res.status(404).send({
-                    message: `Cannot delete Product with id=${id}. Maybe Product was not found or req.body is empty!`
+            const {catalogs, ranges} = oldProduct || {} as Product;
+
+            await Database.sequelize?.transaction(async (trx) => {
+                const deletedArr: unknown[] = [];
+                catalogs?.forEach(({id}) => {
+                    if (id)
+                        deletedArr.push(
+                            catalogRepositories.destroy(id, trx),
+                            new CatalogService().destroy(id),
+                        )
                 });
+                ranges?.forEach(({id}) => {
+                    if (id)
+                        deletedArr.push(
+                            rangeRepositories.destroy(id, trx),
+                            new RangeService().destroy(id),
+                        )
+                });
+                await Promise.all(deletedArr);
+                await productRepositories.destroy(id, trx)
+
+                res.status(200).send({message: "Product was deleted successfully."});
+            })
         } catch (error: Error | any) {
             res.status(500).send({
                 message: error.message || `Could not delete Product with id==${id}. Error: ${error.message}`
@@ -172,7 +191,7 @@ class ProductController {
         }
     }
 
-    getIds(arr?: { id?: number }[]) {
+    getIds(arr ?: { id?: number }[]) {
         return arr?.map((item) => ({id: item.id || 0})) || [];
     }
 }

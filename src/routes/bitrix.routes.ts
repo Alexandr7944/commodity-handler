@@ -1,6 +1,7 @@
 import express, {Request, Response} from "express";
 import InitTransferData from "../services/InitTransferData";
 import BitrixCRUD from "../services/BitrixCRUD";
+import Auth from "../services/Auth";
 
 class BitrixRoutes {
     router: express.Router;
@@ -11,7 +12,7 @@ class BitrixRoutes {
     }
 
     intializeRoutes() {
-        this.router.get('/transfer', new InitTransferData().transfer);
+        this.router.get('/transfer', Auth.checkAuth, new InitTransferData().transfer);
         this.router.get('/brands', this.brands);
         this.router.get('/colors', this.colors);
     }

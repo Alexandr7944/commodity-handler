@@ -9,10 +9,6 @@ class SupplierRepositories {
         return await Supplier.create(product);
     }
 
-    async createMultiple(body: SupplierType[]) {
-        return await Supplier.bulkCreate(body);
-    }
-
     async findAll() {
         return await Supplier.findAll();
     }

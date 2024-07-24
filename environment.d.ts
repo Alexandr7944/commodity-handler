@@ -11,6 +11,8 @@ declare global {
             DB_USER?: string
             DB_PASSWORD?: string
 
+            REF: string
+
             DEV?: boolean
         }
     }

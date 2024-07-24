@@ -15,8 +15,6 @@ class ProductRoutes {
     intializeRoutes() {
         this.router.post('/', this.controller.create);
 
-        this.router.post('/multiple', this.controller.createMultiple);
-
         this.router.get('/', this.controller.findAll);
 
         this.router.get('/:id', this.controller.findOne);

@@ -1,5 +1,6 @@
 import supplierRepositories from "../repositories/supplier.repositories";
 import {Request, Response} from 'express';
+import assert from "node:assert";
 import SupplierService from "../services/supplier.service";
 import Database from "../db/Database";
 
@@ -8,28 +9,12 @@ class SupplierController {
     async create(req: Request, res: Response) {
         const supplier = req.body;
         try {
-            const bitrixId = await new SupplierService().create(supplier);
-            if (!bitrixId && Number.isNaN(bitrixId))
-                throw new Error('Supplier was not created!');
-
-            supplier.id = bitrixId;
+            supplier.id = await new SupplierService().create(supplier);
             const newSupplier = await supplierRepositories.create(supplier);
             res.status(201).send(newSupplier);
         } catch (error: Error | any) {
             res.status(500).send({
                 message: `Some error occurred while creating the Supplier. Error: ${error?.message}`
-            });
-        }
-    }
-
-    async createMultiple(req: Request, res: Response) {
-        const supplier = req.body;
-        try {
-            const newSuppliers = await supplierRepositories.createMultiple(supplier);
-            res.status(201).send(newSuppliers);
-        } catch (error: Error | any) {
-            res.status(500).send({
-                message: `Some error occurred while creating Supplier. Error: ${error?.message}`
             });
         }
     }
@@ -65,20 +50,15 @@ class SupplierController {
     async update(req: Request, res: Response) {
         const supplier = req.body;
         supplier.id = parseInt(req.params.id);
-        const trx = await Database.sequelize?.transaction();
-        if (!trx)
-            throw new Error('Transaction not found!');
 
         try {
-            const num = await supplierRepositories.update(supplier, trx);
-            if (!num[0])
-                throw new Error('Maybe Supplier was not found or req.body is empty!');
-
-            await new SupplierService().update(supplier);
-            trx.commit();
-            res.status(200).send({message: "Supplier was updated successfully."})
+            await Database.sequelize?.transaction(async (trx) => {
+                const [num] = await supplierRepositories.update(supplier, trx);
+                assert.ok(num, 'Supplier was not updated!');
+                await new SupplierService().update(supplier);
+                res.status(200).send({message: "Supplier was updated successfully."})
+            });
         } catch (error: Error | any) {
-            trx.rollback();
             res.status(500).send({
                 message: `Error updating Supplier with id=${supplier.id}. Error: ${error.message}`
             });
@@ -89,14 +69,10 @@ class SupplierController {
         const id = parseInt(req.params.id);
 
         try {
-            await new SupplierService().destroy(id);
             const num = await supplierRepositories.destroy(id);
-
-            num
-                ? res.status(200).send({message: "Supplier was deleted successfully."})
-                : res.status(404).send({
-                    message: `Cannot delete Supplier with id=${id}. Maybe Supplier was not found or req.body is empty!`
-                });
+            assert.ok(num, 'Supplier was not deleted!');
+            await new SupplierService().destroy(id);
+            res.status(200).send({message: "Supplier was deleted successfully."});
         } catch (error: Error | any) {
             res.status(500).send({
                 message: `Could not delete Supplier with id==${id}.`

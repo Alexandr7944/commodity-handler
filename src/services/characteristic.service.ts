@@ -1,4 +1,5 @@
 import BitrixCRUD from "./BitrixCRUD";
+import assert from "node:assert";
 import {CharacteristicType, ProductType, CharacteristicBitrixType} from "../interfaces";
 import supplierRepositories from "../repositories/supplier.repositories";
 
@@ -18,8 +19,7 @@ class CharacteristicService extends BitrixCRUD {
 
     async create({characteristic, product}: { characteristic: CharacteristicType, product: ProductType }) {
         const supplier = await supplierRepositories.findOne(characteristic.supplierId);
-        if (!supplier?.code)
-            throw new Error('Supplier not found');
+        assert.ok(supplier?.code, 'Supplier not found');
 
         this.saveElement = {
             IBLOCK_ID: this.block.IBLOCK_ID,

@@ -32,9 +32,10 @@ class RangeRepositories {
         });
     }
 
-    async destroy(id: number) {
+    async destroy(id: number, transaction?: Transaction) {
         return await Range.destroy({
-            where: {id}
+            where: {id},
+            ...(transaction ? {transaction} : {}),
         });
     }
 }

@@ -13,10 +13,6 @@ class CharacteristicRepositories {
         });
     }
 
-    async createMultiple(body: CharacteristicType[]) {
-        return await Characteristic.bulkCreate(body);
-    }
-
     async findAll() {
         return await Characteristic.findAll({
             include: [Product, Supplier, Range],

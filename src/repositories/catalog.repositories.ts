@@ -30,9 +30,10 @@ class CatalogRepositories {
         });
     }
 
-    async destroy(id: number) {
+    async destroy(id: number, transaction?: Transaction) {
         return await Catalog.destroy({
-            where: {id}
+            where: {id},
+            ...(transaction ? {transaction} : {}),
         });
     }
 }

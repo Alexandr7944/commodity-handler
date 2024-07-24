@@ -1,5 +1,6 @@
 import express from "express";
 import CharacteristicController from "../controllers/characteristic.controller";
+import Auth from "../services/Auth";
 
 class CharacteristicRoutes {
     router: express.Router;
@@ -14,16 +15,10 @@ class CharacteristicRoutes {
 
     intializeRoutes() {
         this.router.post('/', this.controller.create);
-
-        this.router.post('/multiple', this.controller.createMultiple);
-
         this.router.get('/', this.controller.findAll);
-
         this.router.get('/:id', this.controller.findOne);
-
-        this.router.put('/:id', this.controller.update);
-
-        this.router.delete('/:id', this.controller.destroy);
+        this.router.put('/:id', Auth.checkAuth, this.controller.update);
+        this.router.delete('/:id', Auth.checkAuth, this.controller.destroy);
     }
 
 }

@@ -1,4 +1,5 @@
 import {ProductType} from "../interfaces";
+import assert from "node:assert";
 
 class BitrixCRUD {
     acc: any[];
@@ -58,10 +59,8 @@ class BitrixCRUD {
 
     async fetchRequest(url: string) {
         const response = await fetch(url);
-        if (response.ok)
-            return await response.json();
-
-        throw new Error(`Could not fetch ${url}, received ${response.status}`);
+        assert.ok(response.ok, `Could not fetch ${url}, received ${response.status}`);
+        return await response.json();
     }
 
     // Record<string, string | number | string[] | Record<string, string | number | RangeBitrixType | CharacteristicBitrixType> | RangeBitrixType | CharacteristicBitrixType>
@@ -88,8 +87,7 @@ class BitrixCRUD {
         const value = Number.isNaN(+searchValue)
             ? Object.entries(fields || {}).find(([_key, value]) => value === searchValue)?.[0]
             : fields[searchValue as keyof typeof fields];
-        if (!value)
-            throw new Error(`Value ${searchValue} not found`);
+        assert.ok(value, `Value ${searchValue} not found`);
 
         return value;
     }

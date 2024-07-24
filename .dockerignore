@@ -2,10 +2,14 @@
 *.md
 
 # Ignore the build directory
-/dist
+/src
 
 # Ignore node modules, they will be recreated in the build process
 #node_modules/
 
 # Ignore all .git directories
 .git/
+
+/node_modules
+/__tests__
+/coverage

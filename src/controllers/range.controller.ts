@@ -2,6 +2,7 @@ import rangeRepositories from "../repositories/range.repositories";
 import {Request, Response} from 'express';
 import Database from "../db/Database";
 import RangeService from "../services/range.service";
+import assert from "node:assert";
 
 class RangeController {
 
@@ -63,11 +64,9 @@ class RangeController {
         range.id = parseInt(req.params.id);
 
         try {
-            Database.sequelize?.transaction(async (trx) => {
+            await Database.sequelize?.transaction(async (trx) => {
                 const [num] = await rangeRepositories.update(range, trx);
-                if (!num)
-                    throw new Error('Maybe Supplier was not found or req.body is empty!');
-
+                assert.ok(num, new Error('Range was not updated!'));
                 await new RangeService().update({ranges: [range]});
                 res.status(200).send({message: "Range was updated successfully."});
             });

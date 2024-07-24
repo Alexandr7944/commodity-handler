@@ -1,5 +1,6 @@
 import express from "express";
 import ProductController from "../controllers/product.controller";
+import Auth from "../services/Auth";
 
 class ProductRoutes {
     router: express.Router;
@@ -21,9 +22,9 @@ class ProductRoutes {
 
         this.router.get('/:id', this.controller.findOne);
 
-        this.router.put('/:id', this.controller.update);
+        this.router.put('/:id', Auth.checkAuth, this.controller.update);
 
-        this.router.delete('/:id', this.controller.destroy);
+        this.router.delete('/:id', Auth.checkAuth, this.controller.destroy);
     }
 
 }
