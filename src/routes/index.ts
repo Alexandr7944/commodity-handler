@@ -1,6 +1,6 @@
 import {Application, Request, Response} from "express";
-import productRoutes from "./product.routes";
 import supplierRoutes from "./supplier.routes";
+import productRoutes from "./product.routes";
 import catalogRoutes from "./catalog.routes";
 import rangeRoutes from "./range.routes";
 import characteristicRoutes from "./characteristic.routes";

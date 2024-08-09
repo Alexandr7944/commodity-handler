@@ -2,7 +2,7 @@ import express from 'express';
 import Server from './Server';
 import 'dotenv/config';
 
-export const app = express();
+const app = express();
 new Server(app);
 
 const PORT = process.env.PORT || 3105;
@@ -16,3 +16,5 @@ app
             ? console.log("Error: address already in use")
             : console.log(err);
     });
+
+export default app;
