@@ -12,7 +12,8 @@ class CatalogService extends BitrixCRUD {
             fields: {
                 NAME: this.getProductName(product),
                 CURRENCY_ID: "RUB",
-                SORT: 500
+                SORT: 500,
+                SECTION_ID:61
             },
         });
         const {result} = await this.fetchRequest(url);
