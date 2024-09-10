@@ -1,9 +1,18 @@
 import InitTransferData from "../../src/services/InitTransferData";
+import express from "express";
 import request from "supertest";
-import app from "../../src";
+import Routes from "../../src/routes";
 
 describe('test InitTransferData', () => {
-    jest.useFakeTimers();
+    const app = express();
+    new Routes(app);
+    jest.mock("../../src/controllers/warehouse.controller", () =>
+        class WarehouseController {
+            findAll() {}
+            findOne() {}
+            updateData() {}
+        });
+    jest.useFakeTimers()
     // const transferData = new InitTransferData();        // TypeError: Cannot convert undefined or null to object at Function.getOwnPropertyDescriptor (<anonymous>)
 
 

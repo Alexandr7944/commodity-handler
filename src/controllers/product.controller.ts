@@ -20,57 +20,57 @@ class ProductController {
 
         try {
             await Database.sequelize?.transaction(async (trx) => {
-            let oldProduct;
-            product.id
-                ? oldProduct = await productRepositories.findOne(product.id)
-                : [oldProduct] = await productRepositories.findAll(product);
+                let oldProduct;
+                product.id
+                    ? oldProduct = await productRepositories.findOne(product.id)
+                    : [oldProduct] = await productRepositories.findAll(product);
 
-            if (!product.id) {
-                if (oldProduct?.id) {
-                    product.id = oldProduct?.id;
-                } else {
-                    const newProduct = await productRepositories.create(product, trx);
-                    product.id = newProduct.id;
+                if (!product.id) {
+                    if (oldProduct?.id) {
+                        product.id = oldProduct?.id;
+                    } else {
+                        const newProduct = await productRepositories.create(product, trx);
+                        product.id = newProduct.id;
+                    }
                 }
-            }
 
-            if (!catalog.id) {
-                if (oldProduct?.catalogs?.[0]?.id) {
-                    catalog.id = oldProduct?.catalogs?.[0]?.id;
-                } else {
-                    const catalogId = await new CatalogService().create(product);
-                    await catalogRepositories.create({
-                        id: catalogId,
-                        productId: product.id || 0,
-                    }, trx);
-                    catalog.id = catalogId;
+                if (!catalog.id) {
+                    if (oldProduct?.catalogs?.[0]?.id) {
+                        catalog.id = oldProduct?.catalogs?.[0]?.id;
+                    } else {
+                        const catalogId = await new CatalogService().create(product);
+                        await catalogRepositories.create({
+                            id: catalogId,
+                            productId: product.id || 0,
+                        }, trx);
+                        catalog.id = catalogId;
+                    }
                 }
-            }
 
-            if (!range.id) {
-                if (oldProduct?.ranges?.[0]?.id) {
-                    range.id = oldProduct?.ranges?.[0]?.id;
-                } else {
-                    range.id = await new RangeService().create({type: range.type, product});
-                    range.productId = product.id;
-                    await rangeRepositories.create(range, trx);
+                if (!range.id) {
+                    if (oldProduct?.ranges?.[0]?.id) {
+                        range.id = oldProduct?.ranges?.[0]?.id;
+                    } else {
+                        range.id = await new RangeService().create({type: range.type, product});
+                        range.productId = product.id;
+                        await rangeRepositories.create(range, trx);
+                    }
                 }
-            }
 
-            if (!characteristic.id) {
-                const searchCharacteristic = oldProduct?.characteristics?.find(item =>
-                    item.supplierId === characteristic.supplierId);
-                if (searchCharacteristic) {
-                    characteristic.id = searchCharacteristic.id;
-                } else {
-                    characteristic.rangeId = range.id;
-                    characteristic.productId = product.id;
-                    characteristic.id = await new CharacteristicService().create({characteristic, product});
-                    await characteristicRepositories.create(characteristic, trx);
+                if (!characteristic.id) {
+                    const searchCharacteristic = oldProduct?.characteristics?.find(item =>
+                        item.supplierId === characteristic.supplierId);
+                    if (searchCharacteristic) {
+                        characteristic.id = searchCharacteristic.id;
+                    } else {
+                        characteristic.rangeId = range.id;
+                        characteristic.productId = product.id;
+                        characteristic.id = await new CharacteristicService().create({characteristic, product});
+                        await characteristicRepositories.create(characteristic, trx);
+                    }
                 }
-            }
 
-            res.status(201).send({product, catalog, range, characteristic});
+                res.status(201).send({product, catalog, range, characteristic});
             });
         } catch (error: Error | any) {
             console.error(error);
