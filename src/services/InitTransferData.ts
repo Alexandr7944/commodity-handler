@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import BitrixCRUD from "./BitrixCRUD";
-import {CharacteristicType, ProductType} from "../interfaces";
+import {CharacteristicType, ProductType, RangeBitrixType} from "../interfaces";
 import {
     CatalogRepositories,
     CharacteristicRepositories,
@@ -18,12 +18,6 @@ import CharacteristicModel from "../models/characteristic.model";
 import Supplier from "../models/supplier.model";
 import SupplierModel from "../models/supplier.model";
 import assert from "node:assert";
-
-type Range = {
-    ID: string,
-    NAME: string,
-    PROPERTY_771: Record<string, string>
-}
 
 type Characteristic = {
     ID: string,
@@ -97,22 +91,26 @@ class InitTransferData {
     }
 
     async transferRanges() {
-        const ranges: Range[] = await new RangeService().getRanges();
+        const rangeService = new RangeService();
+        const ranges: RangeBitrixType[] = await rangeService.getRanges();
         const types = await this.bitrix.getField('37', 'PROPERTY_771');
-        assert.ok(ranges && types, 'Ranges or types is empty');
+        const countries = await this.bitrix.getField('37', 'PROPERTY_919');
+        assert.ok(ranges && types && countries, 'Ranges or types or countries is empty');
 
         for await (const range of ranges) {
-            const id = Number(range.ID);
-            const type = this.getField(range['PROPERTY_771'], types);
             const product = this.convertName(range.NAME);
-            if (!product)
-                continue;
-
             try {
+                assert.ok(product, 'Product is empty');
                 const idProduct = await this.getProductId(product);
-                await RangeRepositories.create({id, type, productId: idProduct});
+                const rangeBody = {
+                    ...rangeService.getRangeObj(range),
+                    type: this.getField(range['PROPERTY_771'] || {}, types),
+                    country: this.getField(range['PROPERTY_919'] || {}, countries),
+                    productId: idProduct,
+                };
+                await RangeRepositories.create(rangeBody);
             } catch (e: Error | any) {
-                console.log({id, ...product, error: e?.message});
+                console.log({id: range.ID, ...product, error: e?.message});
             }
         }
     }

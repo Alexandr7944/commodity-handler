@@ -1,6 +1,5 @@
 import express from "express";
 import RangeController from "../controllers/range.controller";
-import Auth from "../services/Auth";
 
 class RangeRoutes {
     router: express.Router;

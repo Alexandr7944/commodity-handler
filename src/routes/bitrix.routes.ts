@@ -15,6 +15,7 @@ class BitrixRoutes {
         this.router.get('/transfer', Auth.checkAuth, new InitTransferData().transfer);
         this.router.get('/brands', this.brands);
         this.router.get('/colors', this.colors);
+        this.router.get('/country', this.country);
     }
 
     private async brands(req: Request, res: Response) {
@@ -25,6 +26,11 @@ class BitrixRoutes {
     private async colors(req: Request, res: Response) {
         const colors = await new BitrixCRUD().getColors();
         res.status(201).json(colors);
+    }
+
+    private async country(req: Request, res: Response) {
+        const country = await new BitrixCRUD().getCountry();
+        res.status(201).json(country);
     }
 }
 

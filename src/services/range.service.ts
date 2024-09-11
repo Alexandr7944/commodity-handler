@@ -34,7 +34,7 @@ class RangeService extends BitrixCRUD {
     async getRanges(id?: number) {
         const url = this.urlConverter('lists.element.get.json', {
             ...this.block,
-            ...(id ? {filter: {ID: id}} : {select: ['ID', 'NAME', 'PROPERTY_771']})
+            ...(id ? {filter: {ID: id}} : {})
         });
         return this.getDataFromBitrix(url);
     }
@@ -73,11 +73,25 @@ class RangeService extends BitrixCRUD {
         console.log({method: 'RangeService.destroy', id, result});
     }
 
-
     writeProductValue(product: ProductType) {
         this.saveElement['NAME'] = this.getProductName(product);
         this.saveElement['PROPERTY_681'] = `${product.article}/`;
         this.saveElement['PROPERTY_935'] = product.size || '';
+    }
+
+    getRangeObj(range: RangeBitrixType) {
+        const getValue = (obj: undefined | Record<string, string>) => Object.values(obj || {})[0];
+        return {
+            id: Number(range.ID),
+            owner: getValue(range['PROPERTY_927']),
+            linkGoogleDrive: getValue(range['PROPERTY_713']),
+            package: getValue(range['PROPERTY_505']),
+            composition: getValue(range['PROPERTY_509']),
+            HS: getValue(range['PROPERTY_471']),
+            nameProducer: getValue(range['PROPERTY_721']),
+            addressProducer: getValue(range['PROPERTY_723']),
+            cargoDeclaration: getValue(range['PROPERTY_725']),
+        };
     }
 }
 

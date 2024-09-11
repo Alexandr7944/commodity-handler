@@ -22,6 +22,10 @@ class BitrixCRUD {
         return await this.getField('37', 'PROPERTY_459')
     }
 
+    async getCountry() {
+        return await this.getField('37', 'PROPERTY_919')
+    }
+
     async getField(blockId: string, fieldId: string) {
         const url = this.urlConverter('lists.field.get.json', {
             IBLOCK_TYPE_ID: 'bitrix_processes',

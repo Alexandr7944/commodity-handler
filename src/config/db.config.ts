@@ -2,7 +2,7 @@ const options = {
     host: process.env.DB_HOST,
     port: +process.env.DB_PORT,
     dialect: "postgres",
-    logging: true,
+    logging: false,
     pool: {
         max: 5,
         min: 0,
