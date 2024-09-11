@@ -1,5 +1,5 @@
 import BitrixCRUD from "./BitrixCRUD";
-import {ProductType, RangeBitrixType} from "../interfaces";
+import {ProductType, RangeBitrixType, RangeType} from "../interfaces";
 
 class RangeService extends BitrixCRUD {
     private saveElement = {} as RangeBitrixType;
@@ -7,18 +7,34 @@ class RangeService extends BitrixCRUD {
         IBLOCK_TYPE_ID: 'bitrix_processes',
         IBLOCK_ID: '37',
     }
+    private dictionary: Record<string, string>;
 
     constructor() {
         super();
+        this.dictionary = {
+            'PROPERTY_927': 'owner',
+            'PROPERTY_713': 'linkGoogleDrive',
+            'PROPERTY_505': 'package',
+            'PROPERTY_509': 'composition',
+            'PROPERTY_471': 'HS',
+            'PROPERTY_721': 'nameProducer',
+            'PROPERTY_723': 'addressProducer',
+            'PROPERTY_725': 'cargoDeclaration',
+        }
         this.create = this.create.bind(this);
         this.getRanges = this.getRanges.bind(this);
         this.update = this.update.bind(this);
     }
 
-    async create({type, product}: { type: string, product: ProductType }): Promise<number> {
+    async create({range, product}: { range: RangeType, product: ProductType }): Promise<number> {
         this.saveElement['IBLOCK_ID'] = this.block.IBLOCK_ID;
-        this.saveElement['PROPERTY_771'] = await this.numberField(type, 'PROPERTY_771', this.block.IBLOCK_ID);                   //type
+        Object.entries(this.dictionary).forEach(([key, value]) => {
+            if (range[value as keyof RangeType])
+                this.saveElement = {...this.saveElement, [key]: range[value as keyof RangeType]}
+        })
+        this.saveElement['PROPERTY_771'] = await this.numberField(range.type, 'PROPERTY_771', this.block.IBLOCK_ID);             //type
         this.saveElement['PROPERTY_459'] = await this.numberField(product.color, 'PROPERTY_459', this.block.IBLOCK_ID);          //color
+        this.saveElement['PROPERTY_919'] = await this.numberField(range.country, 'PROPERTY_919', this.block.IBLOCK_ID);          //country
         this.writeProductValue(product);
 
         const url = this.urlConverter('lists.element.add.json', {
@@ -27,7 +43,7 @@ class RangeService extends BitrixCRUD {
             fields: this.saveElement,
         });
         const {result} = await this.fetchRequest(url);
-        console.log({method: 'RangeService.create', type, product, result});
+        console.log({method: 'RangeService.create', range, product, result});
         return result;
     }
 
@@ -81,17 +97,12 @@ class RangeService extends BitrixCRUD {
 
     getRangeObj(range: RangeBitrixType) {
         const getValue = (obj: undefined | Record<string, string>) => Object.values(obj || {})[0];
-        return {
-            id: Number(range.ID),
-            owner: getValue(range['PROPERTY_927']),
-            linkGoogleDrive: getValue(range['PROPERTY_713']),
-            package: getValue(range['PROPERTY_505']),
-            composition: getValue(range['PROPERTY_509']),
-            HS: getValue(range['PROPERTY_471']),
-            nameProducer: getValue(range['PROPERTY_721']),
-            addressProducer: getValue(range['PROPERTY_723']),
-            cargoDeclaration: getValue(range['PROPERTY_725']),
-        };
+        let result = {id: Number(range.ID)};
+        Object.entries(this.dictionary).forEach(([key, value]) => {
+            // @ts-ignore
+            result[value] = getValue(range[key]);
+        })
+        return result;
     }
 }
 

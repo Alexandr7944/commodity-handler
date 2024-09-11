@@ -49,7 +49,7 @@ class ProductController {
                     if (oldProduct?.ranges?.[0]?.id) {
                         range.id = oldProduct?.ranges?.[0]?.id;
                     } else if (range.type) {
-                        range.id = await new RangeService().create({type: range.type, product});
+                        range.id = await new RangeService().create({range, product});
                         range.productId = product.id;
                         await rangeRepositories.create(range, trx);
                     }
