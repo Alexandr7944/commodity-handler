@@ -114,7 +114,7 @@ class ProductController {
                 const data = await productRepositories.findOne(product.id) || {} as Product;
                 assert.ok(num && data?.id, 'Product was not updated!');
 
-                await new RangeService().update({ranges: this.getIds(data.ranges), product});
+                await new RangeService().updateValueProduct({ranges: this.getIds(data.ranges), product});
                 await new CharacteristicService().updateValueProduct({ids: this.getIds(data.characteristics), product});
                 await new CatalogService().update({ids: this.getIds(data.catalogs), product});
                 res.status(200).send({message: "Product was updated successfully."});

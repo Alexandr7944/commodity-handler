@@ -13,7 +13,7 @@ class RangeController {
             await Database.sequelize?.transaction(async (trx) => {
                 const [num] = await rangeRepositories.update(range, trx);
                 assert.ok(num, new Error('Range was not updated!'));
-                await new RangeService().update({ranges: [range]});
+                await new RangeService().update(range);
                 res.status(200).send({message: "Range was updated successfully."});
             });
         } catch (error: Error | any) {

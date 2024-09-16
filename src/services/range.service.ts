@@ -7,7 +7,16 @@ class RangeService extends BitrixCRUD {
         IBLOCK_TYPE_ID: 'bitrix_processes',
         IBLOCK_ID: '37',
     }
-    private dictionary: Record<string, string>;
+    private dictionary: {
+        'PROPERTY_927': 'owner',
+        'PROPERTY_713': 'linkGoogleDrive',
+        'PROPERTY_505': 'package',
+        'PROPERTY_509': 'composition',
+        'PROPERTY_471': 'HS',
+        'PROPERTY_721': 'nameProducer',
+        'PROPERTY_723': 'addressProducer',
+        'PROPERTY_725': 'cargoDeclaration',
+    };
 
     constructor() {
         super();
@@ -55,10 +64,36 @@ class RangeService extends BitrixCRUD {
         return this.getDataFromBitrix(url);
     }
 
-    async update({ranges, product}: { ranges: { id: number, type?: string }[], product?: ProductType }) {
+    async update(range: RangeType) {
+        [this.saveElement] = await this.getRanges(range.id);
+        if (!this.saveElement)
+            throw new Error('Range not found');
+        for (const key in this.saveElement) {
+            if (this.saveElement[key as keyof RangeBitrixType] instanceof Object) {
+                const oldValue = Object.values(this.saveElement[key as keyof RangeBitrixType] || {})[0];
+                const rangeKey = this.dictionary[key as keyof typeof this.dictionary] || '';
+                const newValue = range[rangeKey as keyof RangeType];
+                const resultValue = (newValue === null && oldValue !== newValue) ? (newValue || '') : oldValue;
+                this.saveElement = {...this.saveElement, [key]: resultValue};
+            }
+        }
+
+        this.saveElement['PROPERTY_771'] = await this.numberField(range.type, 'PROPERTY_771', this.block.IBLOCK_ID);
+        this.saveElement['PROPERTY_919'] = await this.numberField(range.country, 'PROPERTY_919', this.block.IBLOCK_ID);
+
+        const url = this.urlConverter('lists.element.update.json', {
+            ...this.block,
+            ELEMENT_ID: range.id,
+            fields: this.saveElement
+        });
+        const {result} = await this.fetchRequest(url);
+        console.log({method: 'RangeService.update', range, result});
+
+    }
+
+    async updateValueProduct({ranges, product}: { ranges: { id: number }[], product?: ProductType }) {
         for await (const range of ranges) {
-            const {id, type} = range;
-            [this.saveElement] = await this.getRanges(id);
+            [this.saveElement] = await this.getRanges(range.id);
             for (const key in this.saveElement) {
                 if (this.saveElement[key as keyof RangeBitrixType] instanceof Object) {
                     const value = Object.values(this.saveElement[key as keyof RangeBitrixType] || {})[0];
@@ -66,17 +101,14 @@ class RangeService extends BitrixCRUD {
                 }
             }
 
-            if (type)
-                this.saveElement['PROPERTY_771'] = await this.numberField(type, 'PROPERTY_771', this.block.IBLOCK_ID);
-
             product && this.writeProductValue(product);
             const url = this.urlConverter('lists.element.update.json', {
                 ...this.block,
-                ELEMENT_ID: id,
+                ELEMENT_ID: range.id,
                 fields: this.saveElement
             });
-            const result = await this.fetchRequest(url);
-            console.log({method: 'RangeService.update', ranges, product, result});
+            const {result} = await this.fetchRequest(url);
+            console.log({method: 'RangeService.updateValueProduct', ranges, product, result});
         }
     }
 
