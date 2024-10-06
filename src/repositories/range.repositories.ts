@@ -1,6 +1,5 @@
-import Range from "../models/range.model";
-import {RangeType} from "../interfaces";
-import Product from "../models/product.model";
+import {Range, Product} from "@/models";
+import {RangeType} from "@/interfaces";
 import {Transaction} from "sequelize";
 
 class RangeRepositories {

@@ -4,7 +4,7 @@ import Range from "./range.model";
 import Supplier from "./supplier.model";
 import Characteristic from "./characteristic.model";
 
-export default {
+export {
     Catalog,
     Characteristic,
     Product,

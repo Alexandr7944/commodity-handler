@@ -1,5 +1,5 @@
 import BitrixCRUD from "./BitrixCRUD";
-import {ProductType, RangeBitrixType} from "../interfaces";
+import {ProductType, RangeBitrixType} from "@/interfaces";
 
 class RangeService extends BitrixCRUD {
     private saveElement = {} as RangeBitrixType;

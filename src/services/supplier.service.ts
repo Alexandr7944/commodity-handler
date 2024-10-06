@@ -1,5 +1,5 @@
 import BitrixCRUD from "./BitrixCRUD";
-import {SupplierType} from "../interfaces";
+import {SupplierType} from "@/interfaces";
 
 class SupplierService extends BitrixCRUD {
     async getSuppliers() {

@@ -1,7 +1,7 @@
-import characteristicRepositories from "../repositories/characteristic.repositories";
+import characteristicRepositories from "@/repositories/characteristic.repositories";
 import {Request, Response} from 'express';
-import Database from "../db/Database";
-import CharacteristicService from "../services/characteristic.service";
+import Database from "@/db/Database";
+import CharacteristicService from "@/services/characteristic.service";
 
 class CharacteristicController {
 

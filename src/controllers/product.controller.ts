@@ -1,13 +1,13 @@
-import productRepositories from "../repositories/product.repositories";
+import productRepositories from "@/repositories/product.repositories";
 import {Request, Response} from 'express';
-import Database from "../db/Database";
-import RangeService from "../services/range.service";
+import Database from "@/db/Database";
+import RangeService from "@/services/range.service";
 import CharacteristicService from "../services/characteristic.service";
-import Product from "../models/product.model";
-import CatalogService from "../services/catalog.service";
-import rangeRepositories from "../repositories/range.repositories";
-import catalogRepositories from "../repositories/catalog.repositories";
-import characteristicRepositories from "../repositories/characteristic.repositories";
+import Product from "@/models/product.model";
+import CatalogService from "@/services/catalog.service";
+import rangeRepositories from "@/repositories/range.repositories";
+import catalogRepositories from "@/repositories/catalog.repositories";
+import characteristicRepositories from "@/repositories/characteristic.repositories";
 
 class ProductController {
     constructor() {

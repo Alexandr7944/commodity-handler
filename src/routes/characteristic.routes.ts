@@ -1,5 +1,5 @@
 import express from "express";
-import CharacteristicController from "../controllers/characteristic.controller";
+import CharacteristicController from "@/controllers/characteristic.controller";
 
 class CharacteristicRoutes {
     router: express.Router;

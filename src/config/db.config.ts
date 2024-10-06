@@ -2,7 +2,7 @@ const options = {
     host: process.env.DB_HOST,
     port: +process.env.DB_PORT,
     dialect: "postgres",
-    logging: true,
+    logging: false,
     pool: {
         max: 5,
         min: 0,
@@ -11,10 +11,8 @@ const options = {
     },
 };
 
-if (process.env.NODE_ENV === 'production')
-    options.logging = false;
-
-console.log(`${options.host}:${options.port}/${process.env.DB_NAME}`);
+if (process.env.TYPE !== 'TEST')
+    console.log(`${options.host}:${options.port}/${process.env.DB_NAME}`);
 
 const config = {
     database: process.env.DB_NAME,

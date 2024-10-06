@@ -1,5 +1,5 @@
-import Supplier from "../models/supplier.model";
-import {SupplierType} from "../interfaces";
+import {Supplier} from "@/models";
+import {SupplierType} from "@/interfaces";
 import {Transaction} from "sequelize";
 
 

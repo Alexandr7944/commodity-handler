@@ -1,5 +1,6 @@
 import morgan from 'morgan';
 import express, {Application} from "express";
+import 'module-alias/register';
 import cors from "cors";
 import Routes from "./routes";
 import Database from "./db/Database";

@@ -14,7 +14,7 @@ class Range extends Model {
         primaryKey: true,
         field: "id",
     })
-    id?: number;
+    declare id?: number;
 
     @Column({
         type: DataType.STRING(255),

@@ -1,7 +1,6 @@
-import Models from "../models";
-import {CatalogType} from "../interfaces";
+import {Catalog, Product} from "@/models";
+import {CatalogType} from "@/interfaces";
 import {Transaction} from "sequelize";
-const {Catalog, Product} = Models;
 class CatalogRepositories {
 
     async create(catalog: CatalogType, transaction?: Transaction) {

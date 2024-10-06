@@ -1,5 +1,5 @@
 import BitrixCRUD from "./BitrixCRUD";
-import {ProductType} from "../interfaces";
+import {ProductType} from "@/interfaces";
 
 class CatalogService extends BitrixCRUD {
     async getCatalogs({select}: { select?: string[] }) {

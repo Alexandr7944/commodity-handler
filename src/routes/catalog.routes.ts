@@ -1,5 +1,5 @@
 import express from "express";
-import CatalogController from "../controllers/catalog.controller";
+import CatalogController from "@/controllers/catalog.controller";
 
 class CatalogRoutes {
     router: express.Router;

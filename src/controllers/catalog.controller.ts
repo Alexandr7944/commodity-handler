@@ -1,4 +1,4 @@
-import catalogRepositories from "../repositories/catalog.repositories";
+import catalogRepositories from "@/repositories/catalog.repositories";
 import {Request, Response} from 'express';
 
 class CatalogController {

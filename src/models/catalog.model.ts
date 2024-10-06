@@ -15,14 +15,14 @@ class Catalog extends Model {
         primaryKey: true,
         field: "id",
     })
-    id?: number;
+    declare id?: number;
 
     @Column({
         type: DataType.INTEGER,
         allowNull: false,
         field: "productId",
     })
-    productId?: number;
+    declare productId?: number;
 
     @BelongsTo(() => Product, 'productId')
     declare product?: NonAttribute<Product>;

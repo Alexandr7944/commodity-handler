@@ -1,14 +1,14 @@
 import {Request, Response} from 'express';
 import BitrixCRUD from "./BitrixCRUD";
-import {CharacteristicType, ProductType} from "../interfaces";
-import Supplier from "../models/supplier.model";
+import {CharacteristicType, ProductType} from "@/interfaces";
+import {Supplier} from "@/models";
 import {
     CatalogRepositories,
     CharacteristicRepositories,
     ProductRepositories,
     RangeRepositories,
     SupplierRepositories
-} from "../repositories";
+} from "@/repositories";
 import CatalogService from "./catalog.service";
 import RangeService from "./range.service";
 import SupplierService from "./supplier.service";
@@ -39,7 +39,7 @@ type ParamsName = Omit<ProductType, 'id'> & { code?: string };
 
 class InitTransferData {
     private bitrix: BitrixCRUD;
-    private cache: Map<string, number>;
+    cache: Map<string, number>;
 
     constructor() {
         this.bitrix = new BitrixCRUD();
@@ -107,16 +107,12 @@ class InitTransferData {
         let suppliers = await new SupplierService().getSuppliers();
         for await (const supplier of suppliers) {
             const {ID, TITLE, UF_CRM_1651668052, COMPANY_TYPE} = supplier;
-            try {
-                await SupplierRepositories.create({
-                    id: Number(ID),
-                    name: TITLE,
-                    code: UF_CRM_1651668052,
-                    type: COMPANY_TYPE
-                });
-            } catch (e: Error | any) {
-                console.log({ID, TITLE, UF_CRM_1651668052, error: e?.message});
-            }
+            await SupplierRepositories.create({
+                id: Number(ID),
+                name: TITLE,
+                code: UF_CRM_1651668052,
+                type: COMPANY_TYPE
+            }).catch((e: Error | any) => console.log({ID, TITLE, UF_CRM_1651668052, error: e?.message}))
         }
     }
 
@@ -154,11 +150,8 @@ class InitTransferData {
             result.productId = await this.getProductId(product);
             result.wbBrand = this.getField(item['PROPERTY_729'], wbBrands);
             result.ozBrand = this.getField(item['PROPERTY_939'], ozBrands);
-            try {
-                await CharacteristicRepositories.create(result);
-            } catch (e: Error | any) {
-                console.log({result, error: e?.message});
-            }
+            await CharacteristicRepositories.create(result).catch((e: Error | any) =>
+                console.log({result, error: e?.message}));
         }
     }
 

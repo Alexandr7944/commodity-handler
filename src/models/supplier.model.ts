@@ -12,7 +12,7 @@ class SupplierModel extends Model {
         allowNull: false,
         field: "id"
     })
-    id?: number;
+    declare id?: number;
 
     @Column({
         type: DataType.STRING(255),

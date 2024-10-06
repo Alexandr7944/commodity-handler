@@ -1,7 +1,7 @@
-import rangeRepositories from "../repositories/range.repositories";
+import rangeRepositories from "@/repositories/range.repositories";
 import {Request, Response} from 'express';
-import Database from "../db/Database";
-import RangeService from "../services/range.service";
+import Database from "@/db/Database";
+import RangeService from "@/services/range.service";
 
 class RangeController {
 

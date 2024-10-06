@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "_moduleAliases": {
+    "@": "dist"
+  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "start": "tsc && node --env-file .env ./dist/index.js",
     "dev": "nodemon --env-file .env.dev ./dist/index.js",
-    "test": "jest --setupFiles=dotenv/config --coverage"
+    "test": "jest --watch"
   },
   "keywords": [],
   "author": "A.S. Vasnev <sanek.vasnev@gmail.com>",
@@ -20,6 +23,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.2",
     "express": "^4.18.2",
+    "module-alias": "^2.2.3",
     "morgan": "^1.10.0",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",

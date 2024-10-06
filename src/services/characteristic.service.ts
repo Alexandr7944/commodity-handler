@@ -1,6 +1,6 @@
 import BitrixCRUD from "./BitrixCRUD";
-import {CharacteristicType, ProductType, CharacteristicBitrixType} from "../interfaces";
-import supplierRepositories from "../repositories/supplier.repositories";
+import {CharacteristicType, ProductType, CharacteristicBitrixType} from "@/interfaces";
+import supplierRepositories from "@/repositories/supplier.repositories";
 
 class CharacteristicService extends BitrixCRUD {
     private saveElement = {} as CharacteristicBitrixType

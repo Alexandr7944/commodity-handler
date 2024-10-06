@@ -1,5 +1,5 @@
 import express from "express";
-import SupplierController from "../controllers/supplier.controller";
+import SupplierController from "@/controllers/supplier.controller";
 
 class ProductRoutes {
     router: express.Router;
