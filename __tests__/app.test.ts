@@ -3,7 +3,6 @@ import request from "supertest";
 import Database from "@/db/Database";
 import Router from "@/routes";
 
-
 describe("test the JWT authorization middleware", () => {
     const app = express();
 

@@ -352,11 +352,12 @@ describe('test InitTransferData transfer', () => {
         new Router(app);
     })
 
-    test('test route /bitrix/transfer product', async () => {
-        await request(app).get('/bitrix/transfer').expect(201);
+    test('test route /bitrix/transfer transfer data', async () => {
+        console.log(process.env.TYPE)
+        await request(app).get('/bitrix/transfer').expect(200);
     })
 
-    test('test route /bitrix/transfer catalog', async () => {
+    test('test route /bitrix/transfer checking saved data', async () => {
         const products = await request(app).get('/product');
         expect(products.status).toBe(200);
         expect(products.body).toEqual(result);

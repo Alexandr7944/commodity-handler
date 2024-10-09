@@ -13,4 +13,3 @@ process.env.DB_USER = 'postgres';
 process.env.DB_PASSWORD = 'root';
 
 process.env.B24_HOST = 'https://abull.bitrix24.ru';
-

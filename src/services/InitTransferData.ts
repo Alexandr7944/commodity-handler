@@ -12,14 +12,10 @@ import CatalogService from "./catalog.service";
 import RangeService from "./range.service";
 import SupplierService from "./supplier.service";
 import CharacteristicService from "./characteristic.service";
-import CatalogModel from "../models/catalog.model";
-import RangeModel from "../models/range.model";
-import CharacteristicModel from "../models/characteristic.model";
-import Supplier from "../models/supplier.model";
-import SupplierModel from "../models/supplier.model";
+import {Supplier, Catalog, Range, Characteristic} from "@/models";
 import assert from "node:assert";
 
-type Characteristic = {
+type CharacteristicBitrixType = {
     ID: string,
     NAME: string,
     PROPERTY_437: string,
@@ -34,7 +30,6 @@ type Characteristic = {
 }
 
 type ParamsName = Omit<ProductType, 'id'> & { code?: string };
-
 
 class InitTransferData {
     private bitrix: BitrixCRUD;
@@ -65,10 +60,10 @@ class InitTransferData {
 
     async resetTables() {
         await Promise.all([
-            RangeModel.truncate({cascade: true}),
-            CharacteristicModel.truncate({cascade: true}),
-            SupplierModel.truncate({cascade: true}),
-            CatalogModel.truncate({cascade: true}),
+            Range.truncate({cascade: true}),
+            Characteristic.truncate({cascade: true}),
+            Supplier.truncate({cascade: true}),
+            Catalog.truncate({cascade: true}),
         ])
     }
 
@@ -145,7 +140,7 @@ class InitTransferData {
 
             let result = {} as CharacteristicType;
             Object.entries(service.fields).forEach(([key, property]) => {
-                const value = Object.values(item[property as keyof Characteristic] || {})?.[0];
+                const value = Object.values(item[property as keyof CharacteristicBitrixType] || {})?.[0];
                 result = value
                     ? {...result, [key]: value}
                     : result;
