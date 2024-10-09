@@ -1,5 +1,5 @@
 import express from "express";
-import ProductController from "../controllers/product.controller";
+import ProductController from "@/controllers/product.controller";
 import Auth from "../services/Auth";
 
 class ProductRoutes {

@@ -1,5 +1,5 @@
 import express from "express";
-import RangeController from "../controllers/range.controller";
+import RangeController from "@/controllers/range.controller";
 
 class RangeRoutes {
     router: express.Router;

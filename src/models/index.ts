@@ -5,7 +5,7 @@ import Supplier from "./supplier.model";
 import Characteristic from "./characteristic.model";
 import Credential from "./credential.model";
 
-export default {
+export {
     Catalog,
     Characteristic,
     Credential,

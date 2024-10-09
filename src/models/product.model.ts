@@ -16,7 +16,7 @@ class Product extends Model {
         primaryKey: true,
         field: "id",
     })
-    id?: number;
+    declare id?: number;
 
     @Column({
         type: DataType.STRING(255),
@@ -44,12 +44,6 @@ class Product extends Model {
         field: "size",
     })
     size?: string;
-
-    get fullName(): NonAttribute<string> {
-        return this.size
-            ? `${this.article}/${this.color}/${this.size} - ${this.name}`
-            : `${this.article}/${this.color} - ${this.name}`;
-    }
 
     @HasMany(() => Catalog, 'productId')
     declare catalogs?: NonAttribute<Catalog[]>;

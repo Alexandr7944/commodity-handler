@@ -16,3 +16,5 @@ app
             ? console.log("Error: address already in use")
             : console.log(err);
     });
+
+export default app;

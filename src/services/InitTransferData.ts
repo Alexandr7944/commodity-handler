@@ -1,13 +1,13 @@
 import {Request, Response} from 'express';
 import BitrixCRUD from "./BitrixCRUD";
-import {CharacteristicType, ProductType, RangeBitrixType} from "../interfaces";
+import {CharacteristicType, ProductType, RangeBitrixType} from "@/interfaces";
 import {
     CatalogRepositories,
     CharacteristicRepositories,
     ProductRepositories,
     RangeRepositories,
     SupplierRepositories
-} from "../repositories";
+} from "@/repositories";
 import CatalogService from "./catalog.service";
 import RangeService from "./range.service";
 import SupplierService from "./supplier.service";
@@ -166,11 +166,8 @@ class InitTransferData {
             result.productId = await this.getProductId(product);
             result.wbBrand = this.getField(item['PROPERTY_729'], wbBrands);
             result.ozBrand = this.getField(item['PROPERTY_939'], ozBrands);
-            try {
-                await CharacteristicRepositories.create(result);
-            } catch (e: Error | any) {
-                console.log({result, error: e?.message});
-            }
+            await CharacteristicRepositories.create(result).catch((e: Error | any) =>
+                console.log({result, error: e?.message}));
         }
     }
 

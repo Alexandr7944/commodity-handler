@@ -1,9 +1,6 @@
-import Characteristic from "../models/characteristic.model";
-import {CharacteristicType} from "../interfaces";
-import Product from "../models/product.model";
-import Supplier from "../models/supplier.model";
-import Range from "../models/range.model";
+import {CharacteristicType} from "@/interfaces";
 import {Transaction} from "sequelize";
+import {Characteristic, Product, Supplier, Range} from "@/models";
 
 class CharacteristicRepositories {
 

@@ -11,10 +11,8 @@ const options = {
     },
 };
 
-if (process.env.NODE_ENV === 'production')
-    options.logging = false;
-
-console.log(`${options.host}:${options.port}/${process.env.DB_NAME}`);
+if (process.env.TYPE !== 'TEST')
+    console.log(`${options.host}:${options.port}/${process.env.DB_NAME}`);
 
 const config = {
     database: process.env.DB_NAME,

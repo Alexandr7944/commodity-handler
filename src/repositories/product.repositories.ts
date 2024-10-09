@@ -1,9 +1,6 @@
-import Product from "../models/product.model";
-import {ProductType} from "../interfaces";
-import Catalog from "../models/catalog.model";
-import Range from "../models/range.model";
-import Characteristic from "../models/characteristic.model";
+import {ProductType} from "@/interfaces";
 import {Transaction} from "sequelize";
+import {Characteristic, Product, Catalog, Range} from "@/models";
 
 class ProductRepositories {
 
