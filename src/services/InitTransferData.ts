@@ -38,7 +38,7 @@ type ParamsName = Omit<ProductType, 'id'> & { code?: string };
 
 
 class InitTransferData {
-    private bitrix: BitrixCRUD;
+    bitrix: BitrixCRUD;
     cache: Map<string, number>;
 
     constructor() {
@@ -56,7 +56,7 @@ class InitTransferData {
             await this.transferRanges();
             await this.transferSuppliers();
             await this.transferCharacteristics();
-            res.send(201);
+            res.sendStatus(201);
         } catch (e: Error | any) {
             console.log(e)
             res.status(500).send({message: e?.message});
@@ -176,7 +176,7 @@ class InitTransferData {
     }
 
     getSupplier(code: string, suppliers: Supplier[]): number | undefined {
-        const supplierId = suppliers.find(item => item.code === code)?.id;
+        const supplierId = suppliers.find(({dataValues: item}) => item.code === code)?.id;
         if (supplierId)
             return +supplierId;
     }

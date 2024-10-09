@@ -1,4 +1,4 @@
-import BitrixCRUD from "../../src/services/BitrixCRUD";
+import BitrixCRUD from "@/services/BitrixCRUD";
 
 describe('test BitrixCRUD', () => {
     let bitrixCRUD: BitrixCRUD = new BitrixCRUD();

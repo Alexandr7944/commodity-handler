@@ -34,7 +34,7 @@ class RangeService extends BitrixCRUD {
     async getRanges(id?: number) {
         const url = this.urlConverter('lists.element.get.json', {
             ...this.block,
-            ...(id ? {filter: {ID: id}} : {select: ['ID', 'NAME', 'PROPERTY_771']})
+            ...(id ? {filter: {ID: id}} : {})
         });
         return this.getDataFromBitrix(url);
     }

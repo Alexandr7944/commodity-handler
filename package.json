@@ -11,7 +11,7 @@
     "watch": "tsc -w",
     "start": "tsc && node --env-file .env ./dist/index.js",
     "dev": "nodemon --env-file .env.dev ./dist/index.js",
-    "test": "jest --watch"
+    "test": "jest --runInBand --watch"
   },
   "keywords": [],
   "author": "A.S. Vasnev <sanek.vasnev@gmail.com>",
