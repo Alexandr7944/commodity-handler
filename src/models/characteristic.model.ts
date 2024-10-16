@@ -22,44 +22,44 @@ class Characteristic extends Model {
         type: DataType.STRING(255),
         field: "wbBrand",
     })
-    wbBrand?: string;
+    declare wbBrand?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "wbBarcode",
     })
-    wbBarcode?: string;
+    declare wbBarcode?: string;
 
     @Column({
         type: DataType.INTEGER,
         field: "wbSku",
     })
-    wbSku?: number;
+    declare wbSku?: number;
 
     @Column({
         type: DataType.STRING(255),
         field: "ozBrand",
     })
-    ozBrand?: string;
+    declare ozBrand?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "ozBarcode",
     })
-    ozBarcode?: string;
+    declare ozBarcode?: string;
 
     @Column({
         type: DataType.INTEGER,
         field: "ozSku",
     })
-    ozSku?: number;
+    declare ozSku?: number;
 
     @Column({
         type: DataType.INTEGER,
         allowNull: false,
         field: "productId",
     })
-    productId?: number;
+    declare productId?: number;
 
     @BelongsTo(() => Product, 'productId')
     declare product?: NonAttribute<Product>;
@@ -69,7 +69,7 @@ class Characteristic extends Model {
         allowNull: false,
         field: "supplierId",
     })
-    supplierId?: number;
+    declare supplierId?: number;
 
     @BelongsTo(() => Supplier, 'supplierId')
     declare supplier?: NonAttribute<Supplier>;
@@ -79,7 +79,7 @@ class Characteristic extends Model {
         allowNull: false,
         field: "rangeId",
     })
-    rangeId?: number;
+    declare rangeId?: number;
 
     @BelongsTo(() => Range, 'rangeId')
     declare range?: NonAttribute<Range>;

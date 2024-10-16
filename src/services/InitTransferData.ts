@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
-import BitrixCRUD from "./BitrixCRUD";
 import {CharacteristicType, ProductType, RangeBitrixType} from "@/interfaces";
+import {Supplier, Catalog, Range, Characteristic} from "@/models";
+import BitrixCRUD from "./BitrixCRUD";
 import {
     CatalogRepositories,
     CharacteristicRepositories,
@@ -12,7 +13,6 @@ import CatalogService from "./catalog.service";
 import RangeService from "./range.service";
 import SupplierService from "./supplier.service";
 import CharacteristicService from "./characteristic.service";
-import {Supplier, Catalog, Range, Characteristic} from "@/models";
 import assert from "node:assert";
 
 type CharacteristicBitrixType = {
@@ -33,7 +33,7 @@ type ParamsName = Omit<ProductType, 'id'> & { code?: string };
 
 class InitTransferData {
     private bitrix: BitrixCRUD;
-    private cache: Map<string, number>;
+    cache: Map<string, number>;
 
     constructor() {
         this.bitrix = new BitrixCRUD();
@@ -185,7 +185,7 @@ class InitTransferData {
     }
 
     getSupplier(code: string, suppliers: Supplier[]): number | undefined {
-        const supplierId = suppliers.find(item => item.code === code)?.id;
+        const supplierId = suppliers.find(({dataValues: item}) => item.code === code)?.id;
         if (supplierId)
             return +supplierId;
     }

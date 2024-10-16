@@ -1,7 +1,7 @@
 import express, {Request, Response} from "express";
-import InitTransferData from "../services/InitTransferData";
-import BitrixCRUD from "../services/BitrixCRUD";
-import Auth from "../services/Auth";
+import InitTransferData from "@/services/InitTransferData";
+import BitrixCRUD from "@/services/BitrixCRUD";
+import Auth from "@/services/Auth";
 
 class BitrixRoutes {
     router: express.Router;

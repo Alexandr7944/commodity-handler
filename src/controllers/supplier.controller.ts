@@ -1,8 +1,8 @@
-import supplierRepositories from "@/repositories/supplier.repositories";
 import {Request, Response} from 'express';
+import assert from "node:assert";
+import supplierRepositories from "@/repositories/supplier.repositories";
 import SupplierService from "@/services/supplier.service";
 import Database from "@/db/Database";
-import assert from "node:assert";
 
 class SupplierController {
 

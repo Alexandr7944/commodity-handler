@@ -23,27 +23,27 @@ class Product extends Model {
         allowNull: false,
         field: "article",
     })
-    article?: string;
+    declare article?: string;
 
     @Column({
         type: DataType.STRING(255),
         allowNull: false,
         field: "name",
     })
-    name?: string;
+    declare name?: string;
 
     @Column({
         type: DataType.STRING(255),
         allowNull: false,
         field: "color",
     })
-    color?: string;
+    declare color?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "size",
     })
-    size?: string;
+    declare size?: string;
 
     @HasMany(() => Catalog, 'productId')
     declare catalogs?: NonAttribute<Catalog[]>;

@@ -20,68 +20,68 @@ class Range extends Model {
         type: DataType.STRING(255),
         field: "type",
     })
-    type?: string;
+    declare type?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "owner",
     })
-    owner?: string;
+    declare owner?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "linkGoogleDrive",
     })
-    linkGoogleDrive?: string;
+    declare linkGoogleDrive?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "package",
     })
-    package?: string;
+    declare package?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "composition",
     })
-    composition?: string;
+    declare composition?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "HS",
     })
-    HS?: string;
+    declare HS?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "country",
     })
-    country?: string;
+    declare country?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "nameProducer",
     })
-    nameProducer?: string;
+    declare nameProducer?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "addressProducer",
     })
-    addressProducer?: string;
+    declare addressProducer?: string;
 
     @Column({
         type: DataType.STRING(255),
         field: "cargoDeclaration",
     })
-    cargoDeclaration?: string;
+    declare cargoDeclaration?: string;
 
     @Column({
         type: DataType.INTEGER,
         allowNull: false,
         field: "productId",
     })
-    productId?: number;
+    declare productId?: number;
 
     @BelongsTo(() => Product, 'productId')
     declare product?: NonAttribute<Product>;

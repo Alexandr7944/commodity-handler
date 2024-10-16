@@ -1,4 +1,4 @@
-import {ProductType} from "../interfaces";
+import {ProductType} from "@/interfaces";
 import assert from "node:assert";
 
 class BitrixCRUD {

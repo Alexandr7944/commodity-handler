@@ -6,12 +6,14 @@ import {Column, Model, Table, DataType} from "sequelize-typescript";
 })
 
 class Credential extends Model {
+
     @Column({
         type: DataType.STRING,
+        allowNull: false,
         primaryKey: true,
         field: "token",
     })
-    token?: string;
+    declare token?: string;
 
     @Column({
         type: DataType.STRING,
@@ -20,7 +22,7 @@ class Credential extends Model {
             isIn: [["admin", "user"]],
         }
     })
-    role?: string;
+    declare role?: string;
 }
 
 export default Credential

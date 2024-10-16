@@ -14,3 +14,4 @@ export {
     Supplier
 }
 
+// add new model in @/db/Database!

@@ -1,6 +1,6 @@
 import express from "express";
 import CharacteristicController from "@/controllers/characteristic.controller";
-import Auth from "../services/Auth";
+import Auth from "@/services/Auth";
 
 class CharacteristicRoutes {
     router: express.Router;

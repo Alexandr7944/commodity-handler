@@ -2,6 +2,8 @@ import express from "express";
 import Database from "@/db/Database";
 import Router from "@/routes";
 import request from "supertest";
+import {RangeBitrixType} from "@/interfaces";
+import {Credential} from "@/models";
 
 const range = {
     "ID": "33341",
@@ -283,7 +285,20 @@ const result = [{
         "wbBrand": "Bammer",
         "wbSku": 225911209,
     }],
-    "ranges": [{"id": 33341, "productId": 1, "type": "ТОП"}],
+    "ranges": [{
+        "HS": "9503006900",
+        "addressProducer": " HONGKONG, UNIT 2508A 25/F BANK OF AMERICA TOWER 12 HARCOURT",
+        "cargoDeclaration": "10720010/191021/0084505",
+        "composition": "картон, дерево",
+        "country": "Китай",
+        "id": 33341,
+        "linkGoogleDrive": "https://drive.google.com/drive/folders/19oKojWcI39-j5-PIYxf2EVkzl10OziefI?usp=sharing",
+        "nameProducer": "SOUTH CHINA SERVICE GROUP LIMITED",
+        "owner": "167",
+        "package": "фигуры деревянные",
+        "productId": 1,
+        "type": "ТОП",
+    }],
 }];
 
 jest.mock("@/services/BitrixCRUD", () =>
@@ -295,6 +310,12 @@ jest.mock("@/services/BitrixCRUD", () =>
                 return Promise.resolve(wbBrands)
             if (blockId === '47' && fieldId === 'PROPERTY_939')
                 return Promise.resolve(ozBrands)
+            if (blockId === '37' && fieldId === 'PROPERTY_919')
+                return Promise.resolve({
+                    "361": "Китай",
+                    "363": "РФ",
+                    "365": "Корея"
+                })
         }
     }
 );
@@ -309,8 +330,42 @@ jest.mock("@/services/catalog.service", () =>
 );
 jest.mock("@/services/range.service", () =>
     class RangeService {
+        private dictionary: {
+            'PROPERTY_927': 'owner',
+            'PROPERTY_713': 'linkGoogleDrive',
+            'PROPERTY_505': 'package',
+            'PROPERTY_509': 'composition',
+            'PROPERTY_471': 'HS',
+            'PROPERTY_721': 'nameProducer',
+            'PROPERTY_723': 'addressProducer',
+            'PROPERTY_725': 'cargoDeclaration',
+        };
+
+        constructor() {
+            this.dictionary = {
+                'PROPERTY_927': 'owner',
+                'PROPERTY_713': 'linkGoogleDrive',
+                'PROPERTY_505': 'package',
+                'PROPERTY_509': 'composition',
+                'PROPERTY_471': 'HS',
+                'PROPERTY_721': 'nameProducer',
+                'PROPERTY_723': 'addressProducer',
+                'PROPERTY_725': 'cargoDeclaration',
+            }
+        }
+
         async getRanges() {
             return Promise.resolve([range])
+        }
+
+        getRangeObj(range: RangeBitrixType) {
+            const getValue = (obj: undefined | Record<string, string>) => Object.values(obj || {})[0];
+            let result = {id: Number(range.ID)};
+            Object.entries(this.dictionary).forEach(([key, value]) => {
+                // @ts-ignore
+                result[value] = getValue(range[key]);
+            })
+            return result;
         }
     }
 );
@@ -353,13 +408,19 @@ describe('test InitTransferData transfer', () => {
     })
 
     test('test route /bitrix/transfer transfer data', async () => {
-        console.log(process.env.TYPE)
-        await request(app).get('/bitrix/transfer').expect(200);
+        Credential.findOne = jest.fn().mockResolvedValue(true);
+        await request(app).get('/bitrix/transfer')
+            .send({user: null})
+            .set({
+                authorization: `Basic ${btoa('test')}`,
+            referer: 'test'
+        }).expect(200);
     })
 
     test('test route /bitrix/transfer checking saved data', async () => {
         const products = await request(app).get('/product');
         expect(products.status).toBe(200);
+        expect(products.body?.length).toBe(1);
         expect(products.body).toEqual(result);
     })
 

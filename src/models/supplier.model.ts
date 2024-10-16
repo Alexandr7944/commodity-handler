@@ -20,7 +20,7 @@ class SupplierModel extends Model {
         unique: true,
         field: "name",
     })
-    name?: string;
+    declare name?: string;
 
     @Column({
         type: DataType.STRING(255),
@@ -28,14 +28,14 @@ class SupplierModel extends Model {
         unique: true,
         field: "code",
     })
-    code?: string;
+    declare code?: string;
 
     @Column({
         type: DataType.STRING(255),
         allowNull: false,
         field: "type",
     })
-    type?: string;
+    declare type?: string;
 }
 
 export default SupplierModel;
