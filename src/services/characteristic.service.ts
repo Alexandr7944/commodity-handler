@@ -49,7 +49,7 @@ class CharacteristicService extends BitrixCRUD {
     async getCharacteristics(id?: number) {
         const url = this.urlConverter('lists.element.get.json', {
             ...this.block,
-            filter: {ID: id || ""}
+            ...(id ? {filter: {ID: id || ""}} : {}),
         });
         return this.getDataFromBitrix(url);
     }

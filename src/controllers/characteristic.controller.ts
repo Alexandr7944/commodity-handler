@@ -21,7 +21,7 @@ class CharacteristicController {
         }
     }
 
-    async findAll(req: Request, res: Response) {
+    async findAll(_req: Request, res: Response) {
         try {
             const characteristics = await characteristicRepositories.findAll();
             res.status(200).send(characteristics);

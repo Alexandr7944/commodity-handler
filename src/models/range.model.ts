@@ -29,13 +29,13 @@ class Range extends Model {
     declare owner?: string;
 
     @Column({
-        type: DataType.STRING(255),
+        type: DataType.TEXT,
         field: "linkGoogleDrive",
     })
     declare linkGoogleDrive?: string;
 
     @Column({
-        type: DataType.STRING(255),
+        type: DataType.TEXT,
         field: "package",
     })
     declare package?: string;
