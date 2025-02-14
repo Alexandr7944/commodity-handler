@@ -7,7 +7,7 @@ class CharacteristicService extends BitrixCRUD {
     private saveElement = {} as CharacteristicBitrixType
     private block = {
         IBLOCK_TYPE_ID: 'bitrix_processes',
-        IBLOCK_ID: '47',
+        IBLOCK_ID:      '47',
     }
 
     constructor() {
@@ -22,8 +22,8 @@ class CharacteristicService extends BitrixCRUD {
         assert.ok(supplier?.code, 'Supplier not found');
 
         this.saveElement = {
-            IBLOCK_ID: this.block.IBLOCK_ID,
-            NAME: `${supplier.code}${this.getProductName(product)}`,
+            IBLOCK_ID:    this.block.IBLOCK_ID,
+            NAME:         `${supplier.code}${this.getProductName(product)}`,
             PROPERTY_437: characteristic.rangeId,
             PROPERTY_687: `${supplier.code}${product.article}/`,
             PROPERTY_443: characteristic.supplierId,
@@ -39,7 +39,7 @@ class CharacteristicService extends BitrixCRUD {
         const url = this.urlConverter('lists.element.add.json', {
             ...this.block,
             ELEMENT_CODE: `element_${product.id}_${characteristic.supplierId}`,
-            fields: this.saveElement
+            fields:       this.saveElement
         });
         const {result} = await this.fetchRequest(url);
         console.log({method: 'CharacteristicService.create', characteristic, result});
@@ -73,12 +73,21 @@ class CharacteristicService extends BitrixCRUD {
         this.saveElement = {
             ...this.saveElement,
             PROPERTY_729: getBrand(wbBrands, item?.wbBrand),
-            PROPERTY_609: item.wbBarcode || '',
-            PROPERTY_611: item.wbSku || '',
+            PROPERTY_609: item.wbBarcode ?? '',
+            PROPERTY_611: item.wbSku ?? '',
             PROPERTY_939: getBrand(ozBrands, item?.ozBrand),
-            PROPERTY_613: item.ozBarcode || '',
-            PROPERTY_615: item.ozSku || '',
+            PROPERTY_613: item.ozBarcode ?? '',
+            PROPERTY_615: item.ozSku ?? '',
             PROPERTY_437: item.rangeId,
+        }
+
+        if (this.saveElement['PROPERTY_443'] !== item.supplierId) {
+            const supplier = await supplierRepositories.findOne(item.supplierId);
+            assert.ok(supplier?.code, 'Supplier not found');
+
+            this.saveElement['PROPERTY_443'] = item.supplierId;
+            this.saveElement['PROPERTY_687'] = this.saveElement['PROPERTY_687']?.toString().replace(/^[A-Z]{2}/, supplier.code);
+            this.saveElement['NAME'] = this.saveElement['NAME'].replace(/^[A-Z]{2}/, supplier.code);
         }
 
         await this.save(item.id);
@@ -112,26 +121,26 @@ class CharacteristicService extends BitrixCRUD {
 
     get fields() {
         return {
-            wbBrand: 'PROPERTY_729',
+            wbBrand:   'PROPERTY_729',
             wbBarcode: 'PROPERTY_609',
-            wbSku: 'PROPERTY_611',
-            ozBrand: 'PROPERTY_939',
+            wbSku:     'PROPERTY_611',
+            ozBrand:   'PROPERTY_939',
             ozBarcode: 'PROPERTY_613',
-            ozSku: 'PROPERTY_615',
-            rangeId: 'PROPERTY_437',
-            article: 'PROPERTY_687', // width code supplier
+            ozSku:     'PROPERTY_615',
+            rangeId:   'PROPERTY_437',
+            article:   'PROPERTY_687', // width code supplier
         }
     }
 
     async save(id: number) {
-        console.log(this.saveElement);
+        console.log('saveElement before storage', this.saveElement);
         const url = this.urlConverter('lists.element.update.json', {
             ...this.block,
             ELEMENT_ID: id,
-            fields: this.saveElement
+            fields:     this.saveElement
         });
         const {result} = await this.fetchRequest(url);
-        console.log({method: 'CharacteristicService.update', element: this.saveElement, result});
+        console.log({method: 'CharacteristicService.update', elementId: this.saveElement.ID, result});
     }
 }
 
