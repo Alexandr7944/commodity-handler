@@ -5,7 +5,7 @@ class RangeService extends BitrixCRUD {
     private saveElement = {} as RangeBitrixType;
     block = {
         IBLOCK_TYPE_ID: 'bitrix_processes',
-        IBLOCK_ID: '37',
+        IBLOCK_ID:      '37',
     }
     private dictionary: {
         'PROPERTY_927': 'owner',
@@ -49,7 +49,7 @@ class RangeService extends BitrixCRUD {
         const url = this.urlConverter('lists.element.add.json', {
             ...this.block,
             ELEMENT_CODE: `element_${product.id}`,
-            fields: this.saveElement,
+            fields:       this.saveElement,
         });
         const {result} = await this.fetchRequest(url);
         console.log({method: 'RangeService.create', range, product, result});
@@ -73,7 +73,7 @@ class RangeService extends BitrixCRUD {
                 const oldValue = Object.values(this.saveElement[key as keyof RangeBitrixType] || {})[0];
                 const rangeKey = this.dictionary[key as keyof typeof this.dictionary] || '';
                 const newValue = range[rangeKey as keyof RangeType];
-                const resultValue = (newValue === null && oldValue !== newValue) ? (newValue || '') : oldValue;
+                const resultValue = (newValue !== undefined && oldValue !== newValue) ? (newValue || '') : oldValue;
                 this.saveElement = {...this.saveElement, [key]: resultValue};
             }
         }
@@ -84,7 +84,7 @@ class RangeService extends BitrixCRUD {
         const url = this.urlConverter('lists.element.update.json', {
             ...this.block,
             ELEMENT_ID: range.id,
-            fields: this.saveElement
+            fields:     this.saveElement
         });
         const {result} = await this.fetchRequest(url);
         console.log({method: 'RangeService.update', range, result});
@@ -105,7 +105,7 @@ class RangeService extends BitrixCRUD {
             const url = this.urlConverter('lists.element.update.json', {
                 ...this.block,
                 ELEMENT_ID: range.id,
-                fields: this.saveElement
+                fields:     this.saveElement
             });
             const {result} = await this.fetchRequest(url);
             console.log({method: 'RangeService.updateValueProduct', ranges, product, result});
