@@ -31,7 +31,7 @@ class Characteristic extends Model {
     declare wbBarcode?: string;
 
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.STRING,
         field: "wbSku",
     })
     declare wbSku?: number;
@@ -49,7 +49,7 @@ class Characteristic extends Model {
     declare ozBarcode?: string;
 
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.STRING(),
         field: "ozSku",
     })
     declare ozSku?: number;

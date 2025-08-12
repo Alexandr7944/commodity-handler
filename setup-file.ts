@@ -9,7 +9,7 @@ process.env.DB_HOST = 'localhost';
 process.env.DB_PORT = 5432;
 process.env.DB_NAME = 'commodity-test';
 
-process.env.DB_USER = 'postgres';
+process.env.DB_USER = 'commodity_user';
 process.env.DB_PASSWORD = 'root';
 
 process.env.B24_HOST = 'https://abull.bitrix24.ru';

@@ -5,12 +5,16 @@ import CharacteristicService from "@/services/characteristic.service";
 import assert from "node:assert";
 
 class CharacteristicController {
+    service: CharacteristicService;
+
+    constructor() {
+        this.service = new CharacteristicService();
+    }
 
     async create(req: Request, res: Response) {
         const {characteristic, product} = req.body;
-        const characteristicService = new CharacteristicService();
         try {
-            characteristic.id = await characteristicService.create({characteristic, product});
+            characteristic.id = await this.service.create({characteristic, product});
             const newCharacteristic = await characteristicRepositories.create(characteristic);
             assert.ok(newCharacteristic.id, 'Characteristic was not created!');
             res.status(201).send(newCharacteristic);
@@ -55,7 +59,7 @@ class CharacteristicController {
             await Database.sequelize?.transaction(async (trx) => {
                 const [num] = await characteristicRepositories.update(characteristic, trx);
                 assert.ok(num, 'Characteristic was not updated!');
-                await new CharacteristicService().update(characteristic)
+                await this.service.update(characteristic)
                 res.status(200).send({message: "Characteristic was updated successfully."})
             })
         } catch (error: Error | any) {
@@ -70,7 +74,7 @@ class CharacteristicController {
         try {
             const num = await characteristicRepositories.destroy(id);
             assert.ok(num, 'Characteristic was not deleted!');
-            await new CharacteristicService().destroy(id)
+            await this.service.destroy(id)
             res.status(200).send({message: "Characteristic was deleted successfully."})
         } catch (error: Error | any) {
             res.status(500).send({

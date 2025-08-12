@@ -68,14 +68,18 @@ class RangeService extends BitrixCRUD {
         [this.saveElement] = await this.getRanges(range.id);
         if (!this.saveElement)
             throw new Error('Range not found');
-        for (const key in this.saveElement) {
-            if (this.saveElement[key as keyof RangeBitrixType] instanceof Object) {
-                const oldValue = Object.values(this.saveElement[key as keyof RangeBitrixType] || {})[0];
-                const rangeKey = this.dictionary[key as keyof typeof this.dictionary] || '';
-                const newValue = range[rangeKey as keyof RangeType];
-                const resultValue = (newValue !== undefined && oldValue !== newValue) ? (newValue || '') : oldValue;
-                this.saveElement = {...this.saveElement, [key]: resultValue};
-            }
+
+        const keys = Object.keys({...this.dictionary, ...this.saveElement});
+        for (const key of keys) {
+            const oldValue = this.saveElement[key as keyof RangeBitrixType] instanceof Object
+                ? Object.values(this.saveElement[key as keyof RangeBitrixType] || {})[0]
+                : this.saveElement[key as keyof RangeBitrixType] ?? '';
+
+            const rangeKey = this.dictionary[key as keyof typeof this.dictionary] || '';
+            const newValue = range[rangeKey as keyof RangeType];
+
+            const resultValue = (newValue !== undefined && oldValue !== newValue) ? (newValue || '') : oldValue;
+            this.saveElement = {...this.saveElement, [key]: resultValue};
         }
 
         this.saveElement['PROPERTY_771'] = await this.numberField(range.type, 'PROPERTY_771', this.block.IBLOCK_ID);
@@ -87,8 +91,7 @@ class RangeService extends BitrixCRUD {
             fields:     this.saveElement
         });
         const {result} = await this.fetchRequest(url);
-        console.log({method: 'RangeService.update', range, result});
-
+        console.log({method: 'RangeService.update', range: this.saveElement, result});
     }
 
     async updateValueProduct({ranges, product}: { ranges: { id: number }[], product?: ProductType }) {

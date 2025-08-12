@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {CharacteristicType, ProductType, RangeBitrixType} from "@/interfaces";
+import {CharacteristicType, ProductType, RangeBitrixType, RangeType} from "@/interfaces";
 import {Supplier, Catalog, Range, Characteristic} from "@/models";
 import BitrixCRUD from "./BitrixCRUD";
 import {
@@ -14,6 +14,7 @@ import RangeService from "./range.service";
 import SupplierService from "./supplier.service";
 import CharacteristicService from "./characteristic.service";
 import assert from "node:assert";
+import {CatalogTransferDataSchema} from "@/schemas/CatalogTransferData.schema";
 
 type CharacteristicBitrixType = {
     ID: string,
@@ -68,19 +69,17 @@ class InitTransferData {
     }
 
     async transferCatalog() {
-        // catalogs: { ID: string, NAME: string }[]
         const catalogs = await new CatalogService().getCatalogs({select: ['ID', 'NAME']});
-        for await (const catalog of catalogs) {
-            const id = Number(catalog.ID);
-            const product = this.convertName(catalog.NAME);
-            if (!product)
-                continue;
-
-            try {
-                const idProduct = await this.getProductId(product);
-                await CatalogRepositories.create({id, productId: idProduct});
-            } catch (e: Error | any) {
-                console.log({id, ...product, error: e?.message});
+        const validateCatalogs = CatalogTransferDataSchema.parse(catalogs);
+        for await (const {id, name} of validateCatalogs) {
+            const product = this.convertName(name);
+            if (product) {
+                try {
+                    const idProduct = await this.getProductId(product);
+                    await CatalogRepositories.create({id, productId: idProduct});
+                } catch (e: Error | any) {
+                    console.log('transferCatalog', {id, ...product, error: e?.message});
+                }
             }
         }
     }
@@ -94,18 +93,20 @@ class InitTransferData {
 
         for await (const range of ranges) {
             const product = this.convertName(range.NAME);
-            try {
-                assert.ok(product, 'Product is empty');
-                const idProduct = await this.getProductId(product);
-                const rangeBody = {
-                    ...rangeService.getRangeObj(range),
-                    type: this.getField(range['PROPERTY_771'] || {}, types),
-                    country: this.getField(range['PROPERTY_919'] || {}, countries),
-                    productId: idProduct,
-                };
-                await RangeRepositories.create(rangeBody);
-            } catch (e: Error | any) {
-                console.log({id: range.ID, ...product, error: e?.message});
+            let rangeBody: RangeType = {} as RangeType;
+            if (product) {
+                try {
+                    const idProduct = await this.getProductId(product);
+                    rangeBody = {
+                        ...rangeService.getRangeObj(range),
+                        type:      this.getField(range['PROPERTY_771'] || {}, types),
+                        country:   this.getField(range['PROPERTY_919'] || {}, countries),
+                        productId: idProduct,
+                    };
+                    await RangeRepositories.create(rangeBody);
+                } catch (e: Error | any) {
+                    console.log('transferRanges', {...rangeBody, error: e?.message});
+                }
             }
         }
     }
@@ -116,13 +117,13 @@ class InitTransferData {
             const {ID, TITLE, UF_CRM_1651668052, COMPANY_TYPE} = supplier;
             try {
                 await SupplierRepositories.create({
-                    id: Number(ID),
+                    id:   Number(ID),
                     name: TITLE,
                     code: UF_CRM_1651668052,
                     type: COMPANY_TYPE
                 });
             } catch (e: Error | any) {
-                console.log({ID, TITLE, UF_CRM_1651668052, error: e?.message});
+                console.log('transferSuppliers', {ID, TITLE, UF_CRM_1651668052, error: e?.message});
             }
         }
     }
@@ -138,12 +139,11 @@ class InitTransferData {
             const product = this.convertName(item.NAME);
             if (!product) continue;
 
-            let result = {} as CharacteristicType;
+            let result: CharacteristicType = {} as CharacteristicType;
             Object.entries(service.fields).forEach(([key, property]) => {
                 const value = Object.values(item[property as keyof CharacteristicBitrixType] || {})?.[0];
-                result = value
-                    ? {...result, [key]: value}
-                    : result;
+                if (value)
+                    result = {...result, [key]: value};
             })
             let code = null;
             if (result.article)
@@ -161,8 +161,9 @@ class InitTransferData {
             result.productId = await this.getProductId(product);
             result.wbBrand = this.getField(item['PROPERTY_729'], wbBrands);
             result.ozBrand = this.getField(item['PROPERTY_939'], ozBrands);
-            await CharacteristicRepositories.create(result).catch((e: Error | any) =>
-                console.log({result, error: e?.message}));
+            await CharacteristicRepositories
+                .create(result)
+                .catch((e: Error | any) => console.log('transferCharacteristics', {result, error: e?.message}));
         }
     }
 
@@ -208,12 +209,12 @@ class InitTransferData {
         if (/^[A-Z]{2}[0-9]{6,}$/.test(article))
             article = article.slice(2);
 
-        if (!isNaN(Number(article))) {
+        if (!isNaN(Number(article)) && color) {
             return {
                 article: article?.trim(),
-                name: name?.trim(),
-                color: color?.trim(),
-                size: size?.trim() || null
+                name:    name?.trim(),
+                color:   color?.trim(),
+                size:    size?.trim() || null
             }
         }
     }
