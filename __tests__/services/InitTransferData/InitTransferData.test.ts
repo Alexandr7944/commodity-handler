@@ -5,7 +5,7 @@ import {CatalogRepositories} from "@/repositories";
 jest.mock("@/services/catalog.service", () =>
     class CatalogService {
         async getCatalogs() {
-            return Promise.resolve([{ID: 1, NAME: '123456/color/size - name'}])
+            return Promise.resolve([{ID: '1', NAME: '123456/color/size - name'}])
         }
     }
 );
