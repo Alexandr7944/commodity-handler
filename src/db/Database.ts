@@ -1,6 +1,21 @@
 import {Sequelize} from "sequelize-typescript";
-import config from "@/config/db.config";
-import {Catalog, Credential, Characteristic, Product, Range, Supplier} from "@/models";
+import config from "@/db/db.config";
+import Catalog from "@/catalogs/data/catalog.model";
+import Product from "@/products/data/product.model";
+import Range from "@/ranges/data/range.model";
+import Supplier from "@/suppliers/data/supplier.model";
+import Characteristic from "@/characteristics/data/characteristic.model";
+import Credential from "@/credentials/data/credential.model";
+
+export {
+    Catalog,
+    Characteristic,
+    Credential,
+    Product,
+    Range,
+    Supplier
+}
+// import {Catalog, Credential, Characteristic, Product, Range, Supplier} from "@/models";
 
 class Database {
     public sequelize: Sequelize | undefined;

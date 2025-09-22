@@ -2,7 +2,7 @@ import express from "express";
 import Database from "@/db/Database";
 import Router from "@/routes";
 import request from "supertest";
-import {Credential} from "@/models";
+import {Credential} from "@/db/Database";
 
 const range = {
     "ID":                "33341",
@@ -325,10 +325,10 @@ jest.mock("@/services/BitrixCRUD", () =>
     }
 );
 
-import CatalogService from "@/services/catalog.service";
-import RangeService from "@/services/range.service";
-import SupplierService from "@/services/supplier.service";
-import CharacteristicService from "@/services/characteristic.service";
+import CatalogService from "@/catalogs/domain/catalog.service";
+import RangeService from "@/ranges/domain/range.service";
+import SupplierService from "@/suppliers/domain/supplier.service";
+import CharacteristicService from "@/characteristics/domain/characteristic.service";
 import mocked = jest.mocked;
 
 jest.mock("@/services/catalog.service");

@@ -17,7 +17,7 @@ class Server {
         new Routes(app);
     }
 
-    config(app: Application): void {
+    private config(app: Application): void {
         const corsOptions = {
             credentials: true,
             origin: "https://docs.google.com/spreadsheets"

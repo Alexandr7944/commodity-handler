@@ -1,6 +1,6 @@
-import InitTransferData from "@/services/InitTransferData";
-import ProductRepositories from "@/repositories/product.repositories";
-import {CatalogRepositories} from "@/repositories";
+import ProductRepositories from "@/products/data/product.repositories";
+import CatalogRepositories from "@/catalogs/data/catalog.repositories";
+import InitTransferData from "@/bitrix/domain/InitTransferData";
 
 jest.mock("@/services/catalog.service", () =>
     class CatalogService {
