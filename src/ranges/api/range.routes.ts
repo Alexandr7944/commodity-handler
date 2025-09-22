@@ -9,13 +9,13 @@ class RangeRoutes {
     constructor() {
         this.router = express.Router();
             this.controller = new RangeController();
-            this.intializeRoutes();
+            this.init();
     }
 
-    intializeRoutes() {
+    init() {
         this.router.put('/:id', this.controller.update);
     }
 
 }
 
-export default new RangeRoutes().router;
+export default RangeRoutes;

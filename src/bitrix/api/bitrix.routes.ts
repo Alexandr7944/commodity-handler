@@ -6,12 +6,13 @@ import BitrixCRUD from "@/bitrix/domain/BitrixCRUD";
 class BitrixRoutes {
     router: express.Router;
 
+
     constructor() {
         this.router = express.Router();
-        this.intializeRoutes();
+        this.init();
     }
 
-    intializeRoutes() {
+    init() {
         this.router.get('/transfer', Auth.checkAuth, new InitTransferData().transfer);
         this.router.get('/brands', this.brands);
         this.router.get('/colors', this.colors);
@@ -34,4 +35,4 @@ class BitrixRoutes {
     }
 }
 
-export default new BitrixRoutes().router;
+export default BitrixRoutes;

@@ -1,18 +1,22 @@
-import {Application, Request, Response} from "express";
-import productRoutes from "@/products/api/product.routes";
-import supplierRoutes from "@/suppliers/api/supplier.routes";
-import characteristicRoutes from "@/characteristics/api/characteristic.routes";
-import rangeRoutes from "@/ranges/api/range.routes";
-import bitrixRoutes from "@/bitrix/api/bitrix.routes";
+import express, {Application, Request, Response} from "express";
+import ProductRoutes from "@/products/api/product.routes";
+import SupplierRoutes from "@/suppliers/api/supplier.routes";
+import CharacteristicRoutes from "@/characteristics/api/characteristic.routes";
+import RangeRoutes from "@/ranges/api/range.routes";
+import BitrixRoutes from "@/bitrix/api/bitrix.routes";
 
 class Routes {
-    constructor(app: Application) {
-        app.use("/characteristic", characteristicRoutes);
-        app.use("/range", rangeRoutes);
-        app.use("/supplier", supplierRoutes);
-        app.use("/product", productRoutes);
-        app.use("/bitrix", bitrixRoutes);
-        app.use("/", (req: Request, res: Response) => res.json({message: 'Server work'}));
+    constructor(private app: Application) {
+        this.initRoutes();
+    }
+
+    initRoutes() {
+        this.app.use("/characteristic", new CharacteristicRoutes().router);
+        this.app.use("/range", new RangeRoutes().router);
+        this.app.use("/supplier", new SupplierRoutes().router);
+        this.app.use("/product", new ProductRoutes().router);
+        this.app.use("/bitrix", new BitrixRoutes().router);
+        this.app.use("/", (_req: Request, res: Response) => res.json({message: 'Server work'}));
     }
 }
 

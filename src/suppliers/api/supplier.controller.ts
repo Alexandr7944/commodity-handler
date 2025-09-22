@@ -19,7 +19,7 @@ class SupplierController {
         }
     }
 
-    async findAll(req: Request, res: Response) {
+    async findAll(_req: Request, res: Response) {
         try {
             const suppliers = await supplierRepositories.findAll();
             res.status(200).send(suppliers);

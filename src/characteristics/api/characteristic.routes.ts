@@ -10,10 +10,10 @@ class CharacteristicRoutes {
     constructor() {
         this.router = express.Router();
         this.controller = new CharacteristicController();
-        this.intializeRoutes();
+        this.init();
     }
 
-    intializeRoutes() {
+    init() {
         this.router.post('/', this.controller.create);
         this.router.get('/', this.controller.findAll);
         this.router.get('/:id', this.controller.findOne);
@@ -23,4 +23,4 @@ class CharacteristicRoutes {
 
 }
 
-export default new CharacteristicRoutes().router;
+export default CharacteristicRoutes;
