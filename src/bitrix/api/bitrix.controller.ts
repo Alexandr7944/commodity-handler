@@ -1,13 +1,15 @@
 import {NextFunction, Request, Response} from "express";
-import BitrixCRUD from "@/bitrix/domain/BitrixCRUD";
 import createHttpError from "http-errors";
-
+import BitrixCRUD from "@/bitrix/domain/BitrixCRUD";
 
 export default class BitrixController {
     service: BitrixCRUD;
 
     constructor() {
         this.service = new BitrixCRUD();
+        this.getBrands = this.getBrands.bind(this);
+        this.getColors = this.getColors.bind(this);
+        this.getCountry = this.getCountry.bind(this);
     }
 
     public async getBrands(_req: Request, res: Response, next: NextFunction): Promise<void> {

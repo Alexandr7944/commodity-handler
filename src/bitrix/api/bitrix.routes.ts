@@ -9,7 +9,7 @@ class BitrixRoutes {
 
     constructor() {
         this.router = express.Router();
-        this.controller = new BitrixController()
+        this.controller = new BitrixController();
         this.init();
     }
 

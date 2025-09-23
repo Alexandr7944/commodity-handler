@@ -5,6 +5,7 @@ import CharacteristicRoutes from "@/characteristics/api/characteristic.routes";
 import RangeRoutes from "@/ranges/api/range.routes";
 import BitrixRoutes from "@/bitrix/api/bitrix.routes";
 import createHttpError from "http-errors";
+import Auth from "@/credentials/domain/Auth";
 
 class Routes {
     constructor(private app: Application) {
@@ -12,6 +13,8 @@ class Routes {
     }
 
     initRoutes() {
+        this.app.use(Auth.checkSheets);
+
         this.app.use("/characteristic", new CharacteristicRoutes().router);
         this.app.use("/range", new RangeRoutes().router);
         this.app.use("/supplier", new SupplierRoutes().router);
