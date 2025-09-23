@@ -1,6 +1,7 @@
-import {Catalog, Product} from "@/db/Database";
+import {Catalog} from "@/db/Database";
 import {CatalogType} from "@/interfaces";
 import {Transaction} from "sequelize";
+
 class CatalogRepositories {
 
     async create(catalog: CatalogType, transaction?: Transaction) {
@@ -9,23 +10,9 @@ class CatalogRepositories {
         });
     }
 
-    async createMultiple(body: CatalogType[]) {
-        return await Catalog.bulkCreate(body);
-    }
-
     async findAll() {
         return await Catalog.findAll({
             order: [['id', 'ASC']],
-        });
-    }
-
-    async findOne(id: number) {
-        return await Catalog.findByPk(id, {include: [Product]});
-    }
-
-    async update(body: CatalogType) {
-        return await Catalog.update(body, {
-            where: {id: body.id}
         });
     }
 

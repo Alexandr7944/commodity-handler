@@ -310,7 +310,7 @@ const characteristicFields = {
     article:   'PROPERTY_687',
 }
 
-jest.mock("@/services/BitrixCRUD", () =>
+jest.mock("@/bitrix/domain/BitrixCRUD", () =>
     class BitrixCRUD {
         async getField(blockId: string, fieldId: string) {
             if (blockId === '37' && fieldId === 'PROPERTY_771')
@@ -331,10 +331,10 @@ import SupplierService from "@/bitrix/data/supplier.service";
 import CharacteristicService from "@/bitrix/data/characteristic.service";
 import mocked = jest.mocked;
 
-jest.mock("@/services/catalog.service");
-jest.mock("@/services/range.service");
-jest.mock("@/services/supplier.service");
-jest.mock("@/services/characteristic.service");
+jest.mock("@/bitrix/data/catalog.service");
+jest.mock("@/bitrix/data/range.service");
+jest.mock("@/bitrix/data/supplier.service");
+jest.mock("@/bitrix/data/characteristic.service");
 
 const MockedCatalogService = mocked(CatalogService);
 const MockedRangeService = mocked(RangeService);

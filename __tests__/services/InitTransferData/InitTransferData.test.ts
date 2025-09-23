@@ -2,7 +2,7 @@ import ProductRepositories from "@/products/data/product.repositories";
 import CatalogRepositories from "@/catalogs/data/catalog.repositories";
 import InitTransferData from "@/bitrix/domain/InitTransferData";
 
-jest.mock("@/services/catalog.service", () =>
+jest.mock("@/bitrix/data/catalog.service", () =>
     class CatalogService {
         async getCatalogs() {
             return Promise.resolve([{ID: '1', NAME: '123456/color/size - name'}])

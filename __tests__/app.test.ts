@@ -1,4 +1,4 @@
-import express, {Request, Response} from "express";
+import express from "express";
 import request from "supertest";
 import Database from "@/db/Database";
 import Router from "@/routes";
@@ -12,7 +12,7 @@ describe("test the JWT authorization middleware", () => {
     })
 
     test('test route /', async () => {
-        await request(app).get('/').expect(200)
+        await request(app).get('/test').expect(200)
     })
 
     afterAll(() => {
