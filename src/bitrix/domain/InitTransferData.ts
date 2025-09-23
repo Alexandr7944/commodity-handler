@@ -9,10 +9,10 @@ import SupplierRepositories from "@/suppliers/data/supplier.repositories";
 import CharacteristicRepositories from "@/characteristics/data/characteristic.repositories";
 import ProductRepositories from "@/products/data/product.repositories";
 import {CatalogTransferDataSchema} from "@/catalogs/schema/CatalogTransferData.schema";
-import CatalogService from "@/catalogs/domain/catalog.service";
-import RangeService from "@/ranges/domain/range.service";
-import SupplierService from "@/suppliers/domain/supplier.service";
-import CharacteristicService from "@/characteristics/domain/characteristic.service";
+import CatalogService from "@/bitrix/data/catalog.service";
+import RangeService from "@/bitrix/data/range.service";
+import SupplierService from "@/bitrix/data/supplier.service";
+import CharacteristicService from "@/bitrix/data/characteristic.service";
 
 type CharacteristicBitrixType = {
     ID: string,

@@ -2,7 +2,7 @@ import {Request, Response} from 'express';
 import Database from "@/db/Database";
 import assert from "node:assert";
 import rangeRepositories from "@/ranges/data/range.repositories";
-import RangeService from "@/ranges/domain/range.service";
+import RangeService from "@/bitrix/data/range.service";
 
 class RangeController {
     async update(req: Request, res: Response) {

@@ -1,8 +1,9 @@
-import {Request, Response} from 'express';
+import {NextFunction, Request, Response} from 'express';
 import Database from "@/db/Database";
 import assert from "node:assert";
 import characteristicRepositories from "@/characteristics/data/characteristic.repositories";
-import CharacteristicService from "@/characteristics/domain/characteristic.service";
+import CharacteristicService from "@/bitrix/data/characteristic.service";
+import createHttpError from "http-errors";
 
 class CharacteristicController {
     service: CharacteristicService;
@@ -36,8 +37,11 @@ class CharacteristicController {
         }
     }
 
-    async findOne(req: Request, res: Response) {
+    async findOne(req: Request, res: Response, next: NextFunction) {
         const id = parseInt(req.params.id);
+        if (isNaN(id))
+            return next(createHttpError(400, 'Invalid id parameter.'));
+
         try {
             const characteristic = await characteristicRepositories.findOne(id);
             characteristic

@@ -2,7 +2,7 @@ import {Request, Response} from 'express';
 import assert from "node:assert";
 import Database from "@/db/Database";
 import supplierRepositories from "@/suppliers/data/supplier.repositories";
-import SupplierService from "@/suppliers/domain/supplier.service";
+import SupplierService from "@/bitrix/data/supplier.service";
 
 class SupplierController {
 

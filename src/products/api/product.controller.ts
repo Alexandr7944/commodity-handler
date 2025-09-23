@@ -5,9 +5,9 @@ import Database, {Product} from "@/db/Database";
 import catalogRepositories from "@/catalogs/data/catalog.repositories";
 import rangeRepositories from "@/ranges/data/range.repositories";
 import characteristicRepositories from "@/characteristics/data/characteristic.repositories";
-import RangeService from "@/ranges/domain/range.service";
-import CharacteristicService from "@/characteristics/domain/characteristic.service";
-import CatalogService from "@/catalogs/domain/catalog.service";
+import RangeService from "@/bitrix/data/range.service";
+import CharacteristicService from "@/bitrix/data/characteristic.service";
+import CatalogService from "@/bitrix/data/catalog.service";
 
 class ProductController {
     constructor() {
