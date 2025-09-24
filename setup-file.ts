@@ -12,5 +12,5 @@ process.env.DB_NAME = 'commodity-test';
 process.env.DB_USER = 'commodity_user';
 process.env.DB_PASSWORD = 'root';
 
-process.env.B24_HOST = 'https://abull.bitrix24.ru';
+process.env.B24_HOST = 'https://test.bitrix24.ru';
 process.env.REF = 'test';
