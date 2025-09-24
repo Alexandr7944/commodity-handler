@@ -12,7 +12,10 @@ describe("test the JWT authorization middleware", () => {
     })
 
     test('test route /', async () => {
-        await request(app).get('/test').expect(200)
+        await request(app)
+            .get('/test')
+            .set('referer', 'test')
+            .expect(200)
     })
 
     afterAll(() => {

@@ -368,7 +368,10 @@ describe('test InitTransferData transfer', () => {
     })
 
     test('test route /bitrix/transfer checking saved data', async () => {
-        const products = await request(app).get('/product');
+        const products = await request(app)
+            .get('/product')
+            .set('referer', 'test');
+
         expect(products.status).toBe(200);
         // expect(products.body?.length).toBe(1);
         // expect(products.body).toEqual(result);
